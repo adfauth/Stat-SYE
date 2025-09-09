@@ -3,7 +3,7 @@
 #SBATCH --mail-type=END,FAIL            # When to send mail (NONE, BEGIN, END, FAIL, ALL)
 #SBATCH --mail-user=adfaut22@stlawu.edu  # Where to send mail
 #SBATCH --mem=32gb                      # How much memory to request
-#SBATCH --time=04:00:00                 # How long to run (hrs:min:sec)
+#SBATCH --time=10:00:00                 # How long to run (hrs:min:sec)
 #SBATCH --output=log%j.txt              # Where to save the output
 #SBATCH --cpus-per-gpu=1                # Allocate 1 CPU
 #SBATCH --gres=gpu:1                    # Allocate 1 GPU

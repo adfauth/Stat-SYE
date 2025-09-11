@@ -12,7 +12,7 @@ echo ""
 
 module load python/anaconda3
 module load cuda
-python analyze_single_folder_toy.py
+python analyze_single_folder.py
 
 echo -n "FINISHED JOB AT: "
 date

@@ -5,7 +5,6 @@
 #SBATCH --mem=32gb                      # How much memory to request
 #SBATCH --output=log%j.txt              # Where to save the output
 #SBATCH --cpus-per-gpu=1                # Allocate 1 CPU
-#SBATCH --gres=gpu:1                    # Allocate 1 GPU
 #SBATCH -n 1                            # Allocate 1 node
 
 echo -n "STARTED JOB AT: "

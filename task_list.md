@@ -1,5 +1,11 @@
 # Task List
 
+## For September 18
+
+1. Run second audiomoth.
+
+2. Do some post-process visualizations. 
+
 ## For September 11
 
 1. Connect to git and github through Positron.

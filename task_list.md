@@ -1,5 +1,11 @@
 # Task List
 
+## For September 25
+
+1. Do a rough heuristic of if the probabilities spit out by birdnet are approximately correct.
+
+2. Facet by day to see if anything jumps out on the eclipse day (may need to cut some species).
+
 ## For September 18
 
 1. Run second audiomoth.

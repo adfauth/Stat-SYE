@@ -1,6 +1,6 @@
 library(tidyverse)
 
-birdnet_results <- read_csv("output_A001_SD001.csv", guess_max = 10000)
+birdnet_results <- read_csv("output_A002_SD013.csv", guess_max = 10000)
 problems(birdnet_results) |> print(n = Inf)
 
 View(birdnet_results)

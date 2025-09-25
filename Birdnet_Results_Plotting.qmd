@@ -1,0 +1,244 @@
+---
+title: "Analysis on First Two Folders"
+author: Aidan Fauth
+format: 
+  html:
+    embed-resources: true
+---
+
+## Set Up
+
+```{r}
+rm(list = ls())
+library(tidyverse)
+library(here)
+library(lubridate)
+library(hms)
+```
+
+### Data
+
+```{r}
+A001SD001 <- read_csv(here("output_A001_SD001.csv"), guess_max = 10000)
+A002SD013 <- read_csv(here("output_A002_SD013.csv"), guess_max = 10000)
+```
+
+## A001_SD001
+
+```{r}
+A001SD001_long <- A001SD001 |> relocate(file) |>
+  pivot_longer(4:ncol(A001SD001), names_to = "species", values_to = "probability") |>
+  mutate(date = str_sub(file, start = 1, end = 8),
+          hour = str_sub(file, 10, 11),
+          minute = str_sub(file, 12, 13),
+          second = str_sub(file, 14, 15)) |>
+  unite("date_time", c("date", "hour", "minute", "second"), sep = ":") |>
+  mutate(date_time = ymd_hms(date_time),
+          time = as_hms(date_time))
+
+A001SD001_sightings <- A001SD001_long |> filter(!is.na(probability))
+
+A001SD001_most_prob <- A001SD001_sightings |> group_by(file, start, end) |>
+  ## filter(probability == max(probability)) |>
+  filter(probability >= 0.75) |> 
+  ungroup() |> ## minimum probability to show in plot
+  mutate(species = fct_infreq(species)) |>
+  mutate(species = fct_rev(species))
+
+A001SD001_most_prob
+
+ggplot(data = A001SD001_most_prob, aes(x = time, y = species)) +
+  geom_jitter(aes(colour = probability), alpha = 0.5, height = 0.25) +
+  theme_minimal() +
+  scale_colour_viridis_c()
+```
+
+#### Facet by day:
+
+Need to parse date_time variable first to get just the date (not the time)
+
+```{r}
+A001SD001_most_prob <- A001SD001_most_prob |> mutate(date = 
+    format(date_time, "%m-%d"))
+```
+
+Now let's facet by day
+
+```{r}
+#| eval: false
+ggplot(data = A001SD001_most_prob, aes(x = time, y = species)) +
+  geom_jitter(aes(colour = probability), alpha = 0.5, height = 0.25) +
+  facet_wrap(~date)+
+  theme_minimal() +
+  scale_colour_viridis_c()
+```
+
+That's way too crazy... let's look at a subset of the days and get rid of some species (like the top 10)?
+
+```{r}
+A001SD001_most_prob |> group_by(species) |> 
+    summarise(n_recordings = n()) |> 
+    arrange(desc(n_recordings)) |> 
+    slice(1:10)
+```
+
+Save top 10 species as a new df
+
+NOTE: some of these species are not native
+
+```{r}
+A001SD001_top_10 <- A001SD001_most_prob |>
+     filter(species == "Pseudacris crucifer_Spring Peeper" |
+species == "Aix sponsa_Wood Duck" |
+species == "Cacomantis variolosus_Brush Cuckoo" |
+species == "Catharus guttatus_Hermit Thrush" | 
+species == "Sayornis phoebe_Eastern Phoebe" |
+species == "Turdus migratorius_American Robin" | 
+species == "Turdus philomelos_Song Thrush" |
+species == "Manorina melanophrys_Bell Miner" | 
+species == "Tapera naevia_Striped Cuckoo" | 
+species == "Palmeria dolei_Akohekohe")
+
+unique(A001SD001_top_10$species)
+```
+
+Now Let's grab a subset of the days (let's grap 3 on either side of the eclipse)
+
+```{r}
+A001SD001_plot_7d <- A001SD001_top_10 |> filter(date == "04-05" |
+    date == "04-06" |
+    date == "04-07" |
+    date == "04-08" |
+    date == "04-09" |
+    date == "04-10" |
+    date == "04-11")
+```
+
+Now let's make the same faceting plot but with the filtered df
+
+```{r}
+ggplot(data = A001SD001_plot_7d, aes(x = time, y = species)) +
+  geom_jitter(aes(colour = probability), alpha = 0.5, height = 0.25) +
+  facet_wrap(~date)+
+  theme_minimal() +
+  scale_colour_viridis_c()
+```
+
+Maybe grab two on either side
+
+```{r}
+A001SD001_plot_5d <- A001SD001_top_10 |> filter(date == "04-06" |
+    date == "04-07" |
+    date == "04-08" |
+    date == "04-09" |
+    date == "04-10")
+```
+
+Plot
+
+```{r}
+ggplot(data = A001SD001_plot_5d, aes(x = time, y = species)) +
+  geom_jitter(aes(colour = probability), alpha = 0.5, height = 0.25) +
+  facet_wrap(~date)+
+  theme_minimal() +
+  scale_colour_viridis_c()
+```
+
+Nothing is really popping out.
+
+Possibly look at the number of IDs over time?
+
+Let's look just at the spring peeper for now
+
+```{r}
+speeper_IDs <- A001SD001_plot_5d |> filter(species == "Pseudacris crucifer_Spring Peeper") |> group_by(date_time) |> mutate(tot_IDs = n())
+```
+
+```{r}
+ggplot(data = speeper_IDs, aes(x = time, y = tot_IDs))+
+    geom_line()+
+    facet_wrap(~date)
+    theme_minimal()
+```
+
+Hard to interpret.
+
+
+## A002_SD013
+
+```{r}
+A002SD013_long <- A002SD013 |> relocate(file) |>
+  pivot_longer(4:ncol(A002SD013), names_to = "species", values_to = "probability") |>
+  mutate(date = str_sub(file, start = 1, end = 8),
+          hour = str_sub(file, 10, 11),
+          minute = str_sub(file, 12, 13),
+          second = str_sub(file, 14, 15)) |>
+  unite("date_time", c("date", "hour", "minute", "second"), sep = ":") |>
+  mutate(date_time = ymd_hms(date_time),
+          time = as_hms(date_time))
+
+A002SD013_sightings <- A002SD013_long |> filter(!is.na(probability))
+
+A002SD013_most_prob <- A002SD013_sightings |> group_by(file, start, end) |>
+  ## filter(probability == max(probability)) |>
+  filter(probability >= 0.75) |> 
+  ungroup() |> ## minimum probability to show in plot
+  mutate(species = fct_infreq(species)) |>
+  mutate(species = fct_rev(species))
+
+
+ggplot(data = A002SD013_most_prob, aes(x = time, y = species)) +
+  geom_jitter(aes(colour = probability), alpha = 0.5, height = 0.25) +
+  theme_minimal() +
+  scale_colour_viridis_c()
+```
+
+#### Facet by day:
+
+Need to parse date_time variable first to get just the date (not the time)
+
+```{r}
+A002SD013_most_prob <- A002SD013_most_prob |> mutate(date = 
+    format(date_time, "%m-%d"))
+```
+
+Get the top 10 species
+
+```{r}
+A002SD013_most_prob |> group_by(species) |> 
+    summarise(n_recordings = n()) |> 
+    arrange(desc(n_recordings)) |> 
+    slice(1:10)
+```
+
+```{r}
+A002SD013_top_10 <- A002SD013_most_prob |>
+     filter(species == "Certhia americana_Brown Creeper" |
+species == "Turdus migratorius_American Robin" |
+species == "Sayornis phoebe_Eastern Phoebe" |
+species == "Branta canadensis_Canada Goose" | 
+species == "Aix sponsa_Wood Duck" |
+species == "Poecile atricapillus_Black-capped Chickadee" | 
+species == "Megaceryle alcyon_Belted Kingfisher" |
+species == "Dryocopus pileatus_Pileated Woodpecker" | 
+species == "Dryobates pubescens_Downy Woodpecker" | 
+species == "Euphagus carolinus_Rusty Blackbird")
+```
+
+```{r}
+A002SD013_plot_5d <- A002SD013_top_10 |> filter(date == "04-06" |
+    date == "04-07" |
+    date == "04-08" |
+    date == "04-09" |
+    date == "04-10")
+```
+
+Plot
+
+```{r}
+ggplot(data = A002SD013_plot_5d, aes(x = time, y = species)) +
+  geom_jitter(aes(colour = probability), alpha = 0.5, height = 0.25) +
+  facet_wrap(~date)+
+  theme_minimal() +
+  scale_colour_viridis_c()
+```

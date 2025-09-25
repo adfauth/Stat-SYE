@@ -166,6 +166,24 @@ ggplot(data = speeper_IDs, aes(x = time, y = tot_IDs))+
 
 Hard to interpret.
 
+Maybe just within the day of the eclipse?
+
+Take the top ten species over that day:
+
+```{r}
+# filter the top10 df to only include the day of the eclipse and have a count for each species
+A001SD001_eday_10 <- A001SD001_top_10 |> 
+    filter(date == "04-08") |> 
+    group_by(time, species) |> 
+    mutate(tot_IDs = n())
+
+# Line plot faceted by species
+ggplot(data = A001SD001_eday_10, aes(x = time, y = tot_IDs)) +
+    geom_line()+
+    facet_wrap(~species)
+    theme_minimal()
+```
+
 
 ## A002_SD013
 
@@ -245,3 +263,24 @@ ggplot(data = A002SD013_plot_5d, aes(x = time, y = species)) +
   theme_minimal() +
   scale_colour_viridis_c()
 ```
+
+Number of Species IDs on the day of the eclipse (top 10 species)
+
+```{r}
+# filter the top10 df to only include the day of the eclipse and have a count for each species
+A002SD013_eday_10 <- A002SD013_top_10 |> 
+    filter(date == "04-08") |> 
+    group_by(time, species) |> 
+    mutate(tot_IDs = n())
+
+# Line plot faceted by species
+ggplot(data = A002SD013_eday_10, aes(x = time, y = tot_IDs)) +
+    geom_line()+
+    facet_wrap(~species)
+    theme_minimal()
+```
+
+
+
+
+

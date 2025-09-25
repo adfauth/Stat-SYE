@@ -1,5 +1,9 @@
 # Task List
 
+## For October 2
+
+1. Look into more of the idea of the species list (and maybe try the GUI on a couple of audio files with the non-native cuckoo).
+
 ## For September 25
 
 1. Do a rough heuristic of if the probabilities spit out by birdnet are approximately correct.

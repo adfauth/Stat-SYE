@@ -38,6 +38,7 @@ A001SD001_long <- A001SD001 |> relocate(file) |>
 
 A001SD001_sightings <- A001SD001_long |> filter(!is.na(probability))
 
+A001SD001_sightings |> filter(str_detect(species, "Cacomantis"))
 A001SD001_most_prob <- A001SD001_sightings |> group_by(file, start, end) |>
   ## filter(probability == max(probability)) |>
   filter(probability >= 0.75) |> 
@@ -143,6 +144,8 @@ ggplot(data = A001SD001_plot_5d, aes(x = time, y = species)) +
   theme_minimal() +
   scale_colour_viridis_c()
 ```
+
+: something is popping out a bit: the Brush Cuckoo during the time of the eclipse. Could it actually be a black-billed cuckoo?
 
 Nothing is really popping out.
 

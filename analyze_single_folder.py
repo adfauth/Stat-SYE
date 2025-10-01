@@ -9,6 +9,8 @@ folder_path = Path("A002_SD013")
 audio_files = list(folder_path.glob("*.WAV"))
 audio_files
 
+species_list = Path("species_list.txt")
+
 all_dfs = [] ## storage
 
 for audio_path in audio_files:
@@ -21,7 +23,8 @@ for audio_path in audio_files:
         predict_species_within_audio_file(
             audio_path,
             min_confidence=0.4,
-            chunk_overlap_s=0.0
+            chunk_overlap_s=0.0,
+            species_filter= species_list
         )
     )
 

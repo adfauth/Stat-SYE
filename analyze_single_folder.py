@@ -5,7 +5,7 @@ import time
 
 import pandas as pd
 
-folder_path = Path("A002_SD013")
+folder_path = Path("Cuckoo_toy")
 audio_files = list(folder_path.glob("*.WAV"))
 audio_files
 

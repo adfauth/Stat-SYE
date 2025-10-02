@@ -1,2 +1,6 @@
-Yellow-billed Cuckoo_Coccyzus americanus
-Black-billed Cuckoo_Coccyzus erythropthalmus
+Abroscopus albogularis_Rufous-faced Warbler
+Carpococcyx radiceus_Bornean Ground-Cuckoo
+Coccyzus americanus_Yellow-billed Cuckoo
+Coccyzus erythropthalmus_Black-billed Cuckoo
+Coccyzus euleri_Pearly-breasted Cuckoo
+Cacomantis variolosus_Brush Cuckoo

@@ -9,6 +9,18 @@ folder_path = Path("Cuckoo_toy")
 audio_files = list(folder_path.glob("*.WAV"))
 audio_files
 
+
+from pathlib import Path
+
+species_list_path = Path("species_list.txt")
+##species_list_path = Path("full_species_list_test.txt")
+
+
+with species_list_path.open() as f:
+    species_list = {line.strip() for line in f if line.strip()}  # ✅ curly braces = set
+
+
+
 all_dfs = [] ## storage
 
 for audio_path in audio_files:
@@ -21,7 +33,9 @@ for audio_path in audio_files:
         predict_species_within_audio_file(
             audio_path,
             min_confidence=0.4,
-            chunk_overlap_s=0.0
+            chunk_overlap_s=0.0,
+            species_filter= species_list
+
         )
     )
 
@@ -41,4 +55,7 @@ for audio_path in audio_files:
 
 all_dfs
 combined_df = pd.concat(all_dfs, ignore_index=True)
-combined_df.to_csv("output.csv", index=False)
+combined_df.to_csv("output_test.csv", index=False)
+
+
+

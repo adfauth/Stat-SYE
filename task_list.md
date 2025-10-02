@@ -1,5 +1,9 @@
 # Task List
 
+## For October 9
+
+1. Run the birdnet model with the (flawed) species list for now (once with spring peeper and once without spring peepers).
+
 ## For October 2
 
 1. Look into more of the idea of the species list (and maybe try the GUI on a couple of audio files with the non-native cuckoo).

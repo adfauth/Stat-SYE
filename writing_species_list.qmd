@@ -47,6 +47,16 @@ into = c("C_name", "Sci_name"), sep = "_") |>
     unite(col = "Combined_Name", c("Sci_name", "C_name"), sep = "_")    
 ```
 
+
+Now let's check against the birdnet list
+
+```{r}
+birdnet <- read_csv(here("birdnet_species.csv"))
+
+cleaned_species |> mutate(ind = if_else(Combined_Name %in% birdnet$Species, true = 1, false = 0)) |> 
+    filter(ind == 0)
+```
+
 ## Write the final csv
 
 ```{r}

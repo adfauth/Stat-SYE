@@ -12,7 +12,7 @@ Spinus tristis
 Zonotrichia albicollis
 Melospiza melodia
 Anas platyrhynchos
-Larus smithsonianus
+Larus argentatus
 Larus marinus
 Nannopterum auritum
 Accipiter striatus
@@ -77,7 +77,7 @@ Certhia americana
 Troglodytes aedon
 Tringa solitaria
 Spatula discors
-Astur cooperii
+Accipiter cooperii
 Dryobates pubescens
 Empidonax minimus
 Vireo solitarius

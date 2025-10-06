@@ -34,13 +34,24 @@ Now I can remove the indicator column and write the cleaned csv
 
 ```{r}
 cleaned_species <- species_ind |> select(-ind)
-
-write_csv(cleaned_species, here("cleaned_species.csv"))
 ```
 
 
+## ERROR!
 
+The scientific name has to be first, so I need to use separate and unite to fix this:
 
+```{r}
+cleaned_species <- cleaned_species |> separate(col = Combined_Name, 
+into = c("C_name", "Sci_name"), sep = "_") |> 
+    unite(col = "Combined_Name", c("Sci_name", "C_name"), sep = "_")    
+```
+
+## Write the final csv
+
+```{r}
+write_csv(cleaned_species, here("cleaned_species.csv"))
+```
 
 
 

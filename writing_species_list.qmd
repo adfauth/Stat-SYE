@@ -4,3 +4,44 @@ author: "Aidan Fauth"
 format: html
 ---
 
+## Set up
+
+```{r}
+rm(list = ls())
+library(tidyverse)
+library(here)
+```
+
+## Data
+
+```{r}
+unfiltered_species <- read_csv(here("Ebird_species.csv"))
+common_names <- read_csv("Species_verification.csv")
+```
+
+This code is to solve the problem that my species list only contains common names, but I have an unfiltered list from Ebird that has all scientific names as well.
+
+This code will filter the rows of the 'unfiltered list' so that I have a csv that has both the common name and scientfic name.
+
+Create an indicator column that matches the cleaned species list with the common names to the unfiltered list with both the common names and scientific names.
+
+```{r}
+species_ind <- unfiltered_species |> mutate(ind = if_else(Common_Name %in% common_names$Species, true = 1, false = 0)) |> 
+    filter(ind == 1)
+```
+
+Now I can remove the indicator column and write the cleaned csv
+
+```{r}
+cleaned_species <- species_ind |> select(-ind)
+
+write_csv(cleaned_species, here("cleaned_species.csv"))
+```
+
+
+
+
+
+
+
+

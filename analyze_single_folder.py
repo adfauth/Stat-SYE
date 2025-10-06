@@ -5,12 +5,10 @@ import time
 
 import pandas as pd
 
-folder_path = Path("Cuckoo_toy")
+folder_path = Path("A001SD001")
 audio_files = list(folder_path.glob("*.WAV"))
 audio_files
 
-
-from pathlib import Path
 
 species_list_path = Path("species_list.txt")
 ##species_list_path = Path("full_species_list_test.txt")

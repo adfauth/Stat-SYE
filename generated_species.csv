@@ -1,0 +1,113 @@
+Species,Probability
+Turdus migratorius_American Robin,0.95322496
+Corvus brachyrhynchos_American Crow,0.9183087
+Poecile atricapillus_Black-capped Chickadee,0.9041697
+Melospiza melodia_Song Sparrow,0.8718632
+Agelaius phoeniceus_Red-winged Blackbird,0.8606823
+Quiscalus quiscula_Common Grackle,0.820729
+Branta canadensis_Canada Goose,0.8090119
+Cyanocitta cristata_Blue Jay,0.732638
+Junco hyemalis_Dark-eyed Junco,0.69135064
+Anas platyrhynchos_Mallard,0.6843818
+Zenaida macroura_Mourning Dove,0.63464093
+Spinus tristis_American Goldfinch,0.6292222
+Colaptes auratus_Northern Flicker,0.57074887
+Dryobates pubescens_Downy Woodpecker,0.56864196
+Sturnus vulgaris_European Starling,0.50025284
+Sitta carolinensis_White-breasted Nuthatch,0.48646948
+Sayornis phoebe_Eastern Phoebe,0.46194965
+Dryobates villosus_Hairy Woodpecker,0.43980044
+Sitta canadensis_Red-breasted Nuthatch,0.4317229
+Cardinalis cardinalis_Northern Cardinal,0.4147022
+Cathartes aura_Turkey Vulture,0.40109777
+Larus delawarensis_Ring-billed Gull,0.39861915
+Corvus corax_Common Raven,0.38846424
+Haemorhous purpureus_Purple Finch,0.34064442
+Mergus merganser_Common Merganser,0.32288936
+Zonotrichia albicollis_White-throated Sparrow,0.31171182
+Sphyrapicus varius_Yellow-bellied Sapsucker,0.30227962
+Spizella passerina_Chipping Sparrow,0.26833683
+Aix sponsa_Wood Duck,0.2682358
+Tachycineta bicolor_Tree Swallow,0.26054227
+Dryocopus pileatus_Pileated Woodpecker,0.25882533
+Aythya collaris_Ring-necked Duck,0.2555682
+Bucephala albeola_Bufflehead,0.24868321
+Spizelloides arborea_American Tree Sparrow,0.23379861
+Larus argentatus_Herring Gull,0.22057375
+Megaceryle alcyon_Belted Kingfisher,0.21494287
+Molothrus ater_Brown-headed Cowbird,0.21282496
+Haliaeetus leucocephalus_Bald Eagle,0.20424236
+Lophodytes cucullatus_Hooded Merganser,0.20252237
+Anas rubripes_American Black Duck,0.19359285
+Setophaga coronata_Yellow-rumped Warbler,0.19272918
+Regulus satrapa_Golden-crowned Kinglet,0.19191252
+Ardea herodias_Great Blue Heron,0.1868333
+Certhia americana_Brown Creeper,0.18542747
+Columba livia_Rock Pigeon,0.18509744
+Charadrius vociferus_Killdeer,0.18050484
+Corthylio calendula_Ruby-crowned Kinglet,0.17532767
+Buteo jamaicensis_Red-tailed Hawk,0.171535
+Meleagris gallopavo_Wild Turkey,0.16712464
+Bonasa umbellus_Ruffed Grouse,0.16627258
+Melanerpes carolinus_Red-bellied Woodpecker,0.16290404
+Baeolophus bicolor_Tufted Titmouse,0.15552205
+Gavia immer_Common Loon,0.15396217
+Passer domesticus_House Sparrow,0.1538144
+Bucephala clangula_Common Goldeneye,0.14947574
+Haemorhous mexicanus_House Finch,0.146642
+Falco sparverius_American Kestrel,0.1449401
+Spinus pinus_Pine Siskin,0.14268938
+Nannopterum auritum_Double-crested Cormorant,0.135935
+Catharus guttatus_Hermit Thrush,0.13359438
+Melospiza georgiana_Swamp Sparrow,0.13002674
+Sialia sialis_Eastern Bluebird,0.1262288
+Troglodytes hiemalis_Winter Wren,0.12283038
+Antigone canadensis_Sandhill Crane,0.12189795
+Anas crecca_Green-winged Teal,0.11964495
+Circus hudsonius_Northern Harrier,0.11031521
+Zonotrichia leucophrys_White-crowned Sparrow,0.1066154
+Pandion haliaetus_Osprey,0.09380788
+Podilymbus podiceps_Pied-billed Grebe,0.08698963
+Aythya affinis_Lesser Scaup,0.08547022
+Setophaga pinus_Pine Warbler,0.08361809
+Mergus serrator_Red-breasted Merganser,0.079387
+Mareca americana_American Wigeon,0.07662283
+Cygnus olor_Mute Swan,0.071417876
+Scolopax minor_American Woodcock,0.068467334
+Acanthis flammea_Common Redpoll,0.06658371
+Larus marinus_Great Black-backed Gull,0.065661974
+Falco columbarius_Merlin,0.06355719
+Passerella iliaca_Fox Sparrow,0.06289629
+Ardea alba_Great Egret,0.06201578
+Coccothraustes vespertinus_Evening Grosbeak,0.06113814
+Eremophila alpestris_Horned Lark,0.06091801
+Euphagus carolinus_Rusty Blackbird,0.057555348
+Gallinago delicata_Wilson's Snipe,0.055922724
+Buteo platypterus_Broad-winged Hawk,0.055266295
+Hirundo rustica_Barn Swallow,0.052236922
+Passerculus sandwichensis_Savannah Sparrow,0.052057836
+Podiceps auritus_Horned Grebe,0.051928382
+Tringa melanoleuca_Greater Yellowlegs,0.049843363
+Spatula clypeata_Northern Shoveler,0.047968727
+Vireo solitarius_Blue-headed Vireo,0.045811463
+Setophaga palmarum_Palm Warbler,0.045014817
+Clangula hyemalis_Long-tailed Duck,0.043209616
+Toxostoma rufum_Brown Thrasher,0.04203203
+Mniotilta varia_Black-and-white Warbler,0.042000372
+Pipilo erythrophthalmus_Eastern Towhee,0.03999152
+Aythya marila_Greater Scaup,0.039217755
+Accipiter cooperii_Cooper's Hawk,0.038256247
+Seiurus aurocapilla_Ovenbird,0.038105972
+Spizella pusilla_Field Sparrow,0.037817363
+Mareca strepera_Gadwall,0.03764706
+Sturnella magna_Eastern Meadowlark,0.0375342
+Accipiter striatus_Sharp-shinned Hawk,0.037362013
+Setophaga virens_Black-throated Green Warbler,0.036207553
+Anas acuta_Northern Pintail,0.03575806
+Spatula discors_Blue-winged Teal,0.033964
+Somateria mollissima_Common Eider,0.033523846
+Buteo lagopus_Rough-legged Hawk,0.03306412
+Melanitta perspicillata_Surf Scoter,0.03299803
+Fulica americana_American Coot,0.032508668
+Aythya americana_Redhead,0.032150686
+Botaurus lentiginosus_American Bittern,0.030384947

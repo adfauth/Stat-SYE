@@ -1,5 +1,5 @@
 Combined_Name,Common_Name,Scientific_Name
-Columba livia_Rock Pigeon,Rock Pigeon,Columba livia
+Columba livia_Rock Dove,Rock Pigeon,Columba livia
 Larus delawarensis_Ring-billed Gull,Ring-billed Gull,Larus delawarensis
 Cathartes aura_Turkey Vulture,Turkey Vulture,Cathartes aura
 Buteo lineatus_Red-shouldered Hawk,Red-shouldered Hawk,Buteo lineatus
@@ -8,19 +8,19 @@ Ardea herodias_Great Blue Heron,Great Blue Heron,Ardea herodias
 Colaptes auratus_Northern Flicker,Northern Flicker,Colaptes auratus
 Sayornis phoebe_Eastern Phoebe,Eastern Phoebe,Sayornis phoebe
 Cyanocitta cristata_Blue Jay,Blue Jay,Cyanocitta cristata
-Dumetella carolinensis_Gray Catbird,Gray Catbird,Dumetella carolinensis
+Dumetella carolinensis_Grey Catbird,Gray Catbird,Dumetella carolinensis
 Spinus tristis_American Goldfinch,American Goldfinch,Spinus tristis
 Zonotrichia albicollis_White-throated Sparrow,White-throated Sparrow,Zonotrichia albicollis
 Melospiza melodia_Song Sparrow,Song Sparrow,Melospiza melodia
 Anas platyrhynchos_Mallard,Mallard,Anas platyrhynchos
-Larus smithsonianus_American Herring Gull,American Herring Gull,Larus smithsonianus
+Larus argentatus_Herring Gull,American Herring Gull,Larus smithsonianus
 Larus marinus_Great Black-backed Gull,Great Black-backed Gull,Larus marinus
 Nannopterum auritum_Double-crested Cormorant,Double-crested Cormorant,Nannopterum auritum
 Accipiter striatus_Sharp-shinned Hawk,Sharp-shinned Hawk,Accipiter striatus
 Corvus brachyrhynchos_American Crow,American Crow,Corvus brachyrhynchos
 Poecile atricapillus_Black-capped Chickadee,Black-capped Chickadee,Poecile atricapillus
 Sitta carolinensis_White-breasted Nuthatch,White-breasted Nuthatch,Sitta carolinensis
-Sturnus vulgaris_European Starling,European Starling,Sturnus vulgaris
+Sturnus vulgaris_Common Starling,European Starling,Sturnus vulgaris
 Bombycilla cedrorum_Cedar Waxwing,Cedar Waxwing,Bombycilla cedrorum
 Pipilo erythrophthalmus_Eastern Towhee,Eastern Towhee,Pipilo erythrophthalmus
 Corvus corax_Common Raven,Common Raven,Corvus corax
@@ -32,7 +32,7 @@ Setophaga ruticilla_American Redstart,American Redstart,Setophaga ruticilla
 Setophaga americana_Northern Parula,Northern Parula,Setophaga americana
 Setophaga magnolia_Magnolia Warbler,Magnolia Warbler,Setophaga magnolia
 Cardinalis cardinalis_Northern Cardinal,Northern Cardinal,Cardinalis cardinalis
-Mergus merganser_Common Merganser,Common Merganser,Mergus merganser
+Mergus merganser_Goosander,Common Merganser,Mergus merganser
 Dryocopus pileatus_Pileated Woodpecker,Pileated Woodpecker,Dryocopus pileatus
 Dryobates villosus_Hairy Woodpecker,Hairy Woodpecker,Dryobates villosus
 Junco hyemalis_Dark-eyed Junco,Dark-eyed Junco,Junco hyemalis
@@ -47,16 +47,16 @@ Aythya collaris_Ring-necked Duck,Ring-necked Duck,Aythya collaris
 Aythya marila_Greater Scaup,Greater Scaup,Aythya marila
 Aythya affinis_Lesser Scaup,Lesser Scaup,Aythya affinis
 Zenaida macroura_Mourning Dove,Mourning Dove,Zenaida macroura
-Gallinula galeata_Common Gallinule,Common Gallinule,Gallinula galeata
+Gallinula galeata_American Moorhen,Common Gallinule,Gallinula galeata
 Podilymbus podiceps_Pied-billed Grebe,Pied-billed Grebe,Podilymbus podiceps
 Haliaeetus leucocephalus_Bald Eagle,Bald Eagle,Haliaeetus leucocephalus
-Eremophila alpestris_Horned Lark,Horned Lark,Eremophila alpestris
+Eremophila alpestris_Shore Lark,Horned Lark,Eremophila alpestris
 Agelaius phoeniceus_Red-winged Blackbird,Red-winged Blackbird,Agelaius phoeniceus
 Euphagus carolinus_Rusty Blackbird,Rusty Blackbird,Euphagus carolinus
 Setophaga pinus_Pine Warbler,Pine Warbler,Setophaga pinus
 Setophaga coronata_Yellow-rumped Warbler,Yellow-rumped Warbler,Setophaga coronata
-Gavia immer_Common Loon,Common Loon,Gavia immer
-Ardea alba_Great Egret,Great Egret,Ardea alba
+Gavia immer_Great Northern Diver,Common Loon,Gavia immer
+Ardea alba_Great White Egret,Great Egret,Ardea alba
 Strix varia_Barred Owl,Barred Owl,Strix varia
 Megaceryle alcyon_Belted Kingfisher,Belted Kingfisher,Megaceryle alcyon
 Baeolophus bicolor_Tufted Titmouse,Tufted Titmouse,Baeolophus bicolor
@@ -75,22 +75,22 @@ Circus hudsonius_Northern Harrier,Northern Harrier,Circus hudsonius
 Buteo jamaicensis_Red-tailed Hawk,Red-tailed Hawk,Buteo jamaicensis
 Corthylio calendula_Ruby-crowned Kinglet,Ruby-crowned Kinglet,Corthylio calendula
 Certhia americana_Brown Creeper,Brown Creeper,Certhia americana
-Troglodytes aedon_Northern House Wren,Northern House Wren,Troglodytes aedon
+Troglodytes aedon_House Wren,Northern House Wren,Troglodytes aedon
 Tringa solitaria_Solitary Sandpiper,Solitary Sandpiper,Tringa solitaria
 Spatula discors_Blue-winged Teal,Blue-winged Teal,Spatula discors
-Astur cooperii_Cooper's Hawk,Cooper's Hawk,Astur cooperii
+Accipiter cooperii_Cooper's Hawk,Cooper's Hawk,Astur cooperii
 Dryobates pubescens_Downy Woodpecker,Downy Woodpecker,Dryobates pubescens
 Empidonax minimus_Least Flycatcher,Least Flycatcher,Empidonax minimus
 Vireo solitarius_Blue-headed Vireo,Blue-headed Vireo,Vireo solitarius
 Tachycineta bicolor_Tree Swallow,Tree Swallow,Tachycineta bicolor
 Regulus satrapa_Golden-crowned Kinglet,Golden-crowned Kinglet,Regulus satrapa
-Anthus rubescens_American Pipit,American Pipit,Anthus rubescens
+Anthus rubescens_Buff-bellied Pipit,American Pipit,Anthus rubescens
 Haemorhous purpureus_Purple Finch,Purple Finch,Haemorhous purpureus
 Molothrus ater_Brown-headed Cowbird,Brown-headed Cowbird,Molothrus ater
 Quiscalus quiscula_Common Grackle,Common Grackle,Quiscalus quiscula
 Setophaga caerulescens_Black-throated Blue Warbler,Black-throated Blue Warbler,Setophaga caerulescens
 Pheucticus ludovicianus_Rose-breasted Grosbeak,Rose-breasted Grosbeak,Pheucticus ludovicianus
-Anas crecca_Green-winged Teal,Green-winged Teal,Anas crecca
+Anas crecca_Eurasian/Green-winged Teal,Green-winged Teal,Anas crecca
 Charadrius vociferus_Killdeer,Killdeer,Charadrius vociferus
 Calidris melanotos_Pectoral Sandpiper,Pectoral Sandpiper,Calidris melanotos
 Setophaga palmarum_Palm Warbler,Palm Warbler,Setophaga palmarum
@@ -102,7 +102,7 @@ Perisoreus canadensis_Canada Jay,Canada Jay,Perisoreus canadensis
 Mniotilta varia_Black-and-white Warbler,Black-and-white Warbler,Mniotilta varia
 Zonotrichia leucophrys_White-crowned Sparrow,White-crowned Sparrow,Zonotrichia leucophrys
 Leiothlypis peregrina_Tennessee Warbler,Tennessee Warbler,Leiothlypis peregrina
-Pluvialis squatarola_Black-bellied Plover,Black-bellied Plover,Pluvialis squatarola
+Pluvialis squatarola_Grey Plover,Black-bellied Plover,Pluvialis squatarola
 Gallinago delicata_Wilson's Snipe,Wilson's Snipe,Gallinago delicata
 Setophaga virens_Black-throated Green Warbler,Black-throated Green Warbler,Setophaga virens
 Piranga olivacea_Scarlet Tanager,Scarlet Tanager,Piranga olivacea
@@ -169,6 +169,6 @@ Progne subis_Purple Martin,Purple Martin,Progne subis
 Fulica americana_American Coot,American Coot,Fulica americana
 Petrochelidon pyrrhonota_Cliff Swallow,Cliff Swallow,Petrochelidon pyrrhonota
 Geothlypis philadelphia_Mourning Warbler,Mourning Warbler,Geothlypis philadelphia
-Loxia curvirostra_Red Crossbill,Red Crossbill,Loxia curvirostra
+Loxia curvirostra_Common Crossbill,Red Crossbill,Loxia curvirostra
 Bucephala clangula_Common Goldeneye,Common Goldeneye,Bucephala clangula
 Podiceps grisegena_Red-necked Grebe,Red-necked Grebe,Podiceps grisegena

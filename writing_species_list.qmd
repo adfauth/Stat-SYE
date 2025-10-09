@@ -63,6 +63,30 @@ cleaned_species |> mutate(ind = if_else(Combined_Name %in% birdnet$Species, true
 write_csv(cleaned_species, here("cleaned_species.csv"))
 ```
 
+## MORE PROBLEMS!!!
 
+I continue to have problems with the species list but I learned about an ebird R package.
+
+I'm going to try to ensure that the the species I have are the correct ones.
+
+```{r}
+library(auk)
+
+species_file <- here("scientific_names_list.txt")
+
+species_list <- readLines(species_file)
+
+ebird_df <- ebird_species(species_list, type = "all")
+```
+
+Now I have a data frame of all my species and if they are in ebird taxonomy
+
+Let's check if I have any NAs
+
+```{r}
+ebird_comb <- ebird_df |> select(2:3) |> unite(col = "Combined_name", sep = "_")
+
+write_csv(ebird_comb, here("ebird_species_list.csv"))
+```
 
 

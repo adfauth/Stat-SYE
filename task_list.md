@@ -1,5 +1,15 @@
 # Task List
 
+## For October 23
+
+1. Antijoin the current species list with the species detected through the two audiomoths and add missing species that make sense.
+
+2. Start to narrow down the problematic species.
+
+3. Run the birdnet model with the (flawed) species list for now (once with spring peeper and once without spring peepers).
+
+
+
 ## For October 9
 
 1. Run the birdnet model with the (flawed) species list for now (once with spring peeper and once without spring peepers).

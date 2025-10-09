@@ -1,9 +1,114 @@
-Columba livia_Rock Pigeon
-Larus delawarensis_Ring-billed Gull
-Cathartes aura_Turkey Vulture
-Buteo lineatus_Red-shouldered Hawk
+Lithobates palustris_Pickerel Frog
+Pseudacris crucifer_Spring Peeper
+Turdus migratorius_American Robin
+Corvus brachyrhynchos_American Crow
+Poecile atricapillus_Black-capped Chickadee
+Melospiza melodia_Song Sparrow
+Agelaius phoeniceus_Red-winged Blackbird
+Quiscalus quiscula_Common Grackle
 Branta canadensis_Canada Goose
-Ardea herodias_Great Blue Heron
-Colaptes auratus_Northern Flicker
-Sayornis phoebe_Eastern Phoebe
 Cyanocitta cristata_Blue Jay
+Junco hyemalis_Dark-eyed Junco
+Anas platyrhynchos_Mallard
+Zenaida macroura_Mourning Dove
+Spinus tristis_American Goldfinch
+Colaptes auratus_Northern Flicker
+Dryobates pubescens_Downy Woodpecker
+Sturnus vulgaris_European Starling
+Sitta carolinensis_White-breasted Nuthatch
+Sayornis phoebe_Eastern Phoebe
+Dryobates villosus_Hairy Woodpecker
+Sitta canadensis_Red-breasted Nuthatch
+Cardinalis cardinalis_Northern Cardinal
+Cathartes aura_Turkey Vulture
+Larus delawarensis_Ring-billed Gull
+Corvus corax_Common Raven
+Haemorhous purpureus_Purple Finch
+Mergus merganser_Common Merganser
+Zonotrichia albicollis_White-throated Sparrow
+Sphyrapicus varius_Yellow-bellied Sapsucker
+Spizella passerina_Chipping Sparrow
+Aix sponsa_Wood Duck
+Tachycineta bicolor_Tree Swallow
+Dryocopus pileatus_Pileated Woodpecker
+Aythya collaris_Ring-necked Duck
+Bucephala albeola_Bufflehead
+Spizelloides arborea_American Tree Sparrow
+Larus argentatus_Herring Gull
+Megaceryle alcyon_Belted Kingfisher
+Molothrus ater_Brown-headed Cowbird
+Haliaeetus leucocephalus_Bald Eagle
+Lophodytes cucullatus_Hooded Merganser
+Anas rubripes_American Black Duck
+Setophaga coronata_Yellow-rumped Warbler
+Regulus satrapa_Golden-crowned Kinglet
+Ardea herodias_Great Blue Heron
+Certhia americana_Brown Creeper
+Columba livia_Rock Pigeon
+Charadrius vociferus_Killdeer
+Corthylio calendula_Ruby-crowned Kinglet
+Buteo jamaicensis_Red-tailed Hawk
+Meleagris gallopavo_Wild Turkey
+Bonasa umbellus_Ruffed Grouse
+Melanerpes carolinus_Red-bellied Woodpecker
+Baeolophus bicolor_Tufted Titmouse
+Gavia immer_Common Loon
+Passer domesticus_House Sparrow
+Bucephala clangula_Common Goldeneye
+Haemorhous mexicanus_House Finch
+Falco sparverius_American Kestrel
+Spinus pinus_Pine Siskin
+Nannopterum auritum_Double-crested Cormorant
+Catharus guttatus_Hermit Thrush
+Melospiza georgiana_Swamp Sparrow
+Sialia sialis_Eastern Bluebird
+Troglodytes hiemalis_Winter Wren
+Antigone canadensis_Sandhill Crane
+Anas crecca_Green-winged Teal
+Circus hudsonius_Northern Harrier
+Zonotrichia leucophrys_White-crowned Sparrow
+Pandion haliaetus_Osprey
+Podilymbus podiceps_Pied-billed Grebe
+Aythya affinis_Lesser Scaup
+Setophaga pinus_Pine Warbler
+Mergus serrator_Red-breasted Merganser
+Mareca americana_American Wigeon
+Cygnus olor_Mute Swan
+Scolopax minor_American Woodcock
+Acanthis flammea_Common Redpoll
+Larus marinus_Great Black-backed Gull
+Falco columbarius_Merlin
+Passerella iliaca_Fox Sparrow
+Ardea alba_Great Egret
+Coccothraustes vespertinus_Evening Grosbeak
+Eremophila alpestris_Horned Lark
+Euphagus carolinus_Rusty Blackbird
+Gallinago delicata_Wilson's Snipe
+Buteo platypterus_Broad-winged Hawk
+Hirundo rustica_Barn Swallow
+Passerculus sandwichensis_Savannah Sparrow
+Podiceps auritus_Horned Grebe
+Tringa melanoleuca_Greater Yellowlegs
+Spatula clypeata_Northern Shoveler
+Vireo solitarius_Blue-headed Vireo
+Setophaga palmarum_Palm Warbler
+Clangula hyemalis_Long-tailed Duck
+Toxostoma rufum_Brown Thrasher
+Mniotilta varia_Black-and-white Warbler
+Pipilo erythrophthalmus_Eastern Towhee
+Aythya marila_Greater Scaup
+Accipiter cooperii_Cooper's Hawk
+Seiurus aurocapilla_Ovenbird
+Spizella pusilla_Field Sparrow
+Mareca strepera_Gadwall
+Sturnella magna_Eastern Meadowlark
+Accipiter striatus_Sharp-shinned Hawk
+Setophaga virens_Black-throated Green Warbler
+Anas acuta_Northern Pintail
+Spatula discors_Blue-winged Teal
+Somateria mollissima_Common Eider
+Buteo lagopus_Rough-legged Hawk
+Melanitta perspicillata_Surf Scoter
+Fulica americana_American Coot
+Aythya americana_Redhead
+Botaurus lentiginosus_American Bittern

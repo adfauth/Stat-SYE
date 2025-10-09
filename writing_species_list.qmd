@@ -51,7 +51,7 @@ into = c("C_name", "Sci_name"), sep = "_") |>
 Now let's check against the birdnet list
 
 ```{r}
-birdnet <- read_csv(here("birdnet_species.csv"))
+birdnet <- read_csv(here("Species_lists/birdnet_species.csv"))
 
 cleaned_species |> mutate(ind = if_else(Combined_Name %in% birdnet$Species, true = 1, false = 0)) |> 
     filter(ind == 0)
@@ -60,7 +60,7 @@ cleaned_species |> mutate(ind = if_else(Combined_Name %in% birdnet$Species, true
 ## Write the final csv
 
 ```{r}
-write_csv(cleaned_species, here("cleaned_species.csv"))
+write_csv(cleaned_species, here("Species_lists/cleaned_species.csv"))
 ```
 
 ## MORE PROBLEMS!!!
@@ -72,7 +72,7 @@ I'm going to try to ensure that the the species I have are the correct ones.
 ```{r}
 library(auk)
 
-species_file <- here("scientific_names_list.txt")
+species_file <- here("Species_lists/scientific_names_list.txt")
 
 species_list <- readLines(species_file)
 
@@ -86,7 +86,18 @@ Let's check if I have any NAs
 ```{r}
 ebird_comb <- ebird_df |> select(2:3) |> unite(col = "Combined_name", sep = "_")
 
-write_csv(ebird_comb, here("ebird_species_list.csv"))
+write_csv(ebird_comb, here("Species_lists/ebird_species_list.csv"))
 ```
+
+## Anti-join with BirdNet Generated List
+
+```{r}
+cleaned <- read_csv(here("Species_lists/cleaned_species.csv"))
+generated <- read_csv(here("Species_lists/generated_species.csv"))
+
+```
+
+Anti join:
+
 
 

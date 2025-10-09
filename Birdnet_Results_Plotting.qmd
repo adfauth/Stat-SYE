@@ -19,8 +19,8 @@ library(hms)
 ### Data
 
 ```{r}
-A001SD001 <- read_csv(here("output_A001_SD001.csv"), guess_max = 10000)
-A002SD013 <- read_csv(here("output_A002_SD013.csv"), guess_max = 10000)
+A001SD001 <- read_csv(here("Output/output_A001_SD001.csv"), guess_max = 10000)
+A002SD013 <- read_csv(here("Output/output_A002_SD013.csv"), guess_max = 10000)
 ```
 
 ## A001_SD001

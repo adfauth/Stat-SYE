@@ -15,8 +15,8 @@ library(here)
 ## Data
 
 ```{r}
-unfiltered_species <- read_csv(here("Ebird_species.csv"))
-common_names <- read_csv("Species_verification.csv")
+unfiltered_species <- read_csv(here("Species_lists/Ebird_species.csv"))
+common_names <- read_csv("Species_lists/Species_verification.csv")
 ```
 
 This code is to solve the problem that my species list only contains common names, but I have an unfiltered list from Ebird that has all scientific names as well.

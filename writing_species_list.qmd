@@ -94,10 +94,72 @@ write_csv(ebird_comb, here("Species_lists/ebird_species_list.csv"))
 ```{r}
 cleaned <- read_csv(here("Species_lists/cleaned_species.csv"))
 generated <- read_csv(here("Species_lists/generated_species.csv"))
-
 ```
 
-Anti join:
+### A001SD001
 
+```{r}
+library(hms)
 
+A001SD001 <- read_csv("Output/output_A001_SD001.csv")
 
+# clean it up:
+A001SD001_long <- A001SD001 |> relocate(file) |>
+  pivot_longer(4:ncol(A001SD001), names_to = "species", values_to = "probability") |>
+  mutate(date = str_sub(file, start = 1, end = 8),
+          hour = str_sub(file, 10, 11),
+          minute = str_sub(file, 12, 13),
+          second = str_sub(file, 14, 15)) |>
+  unite("date_time", c("date", "hour", "minute", "second"), sep = ":") |>
+  mutate(date_time = ymd_hms(date_time),
+          time = as_hms(date_time))
+
+A001SD001_sightings <- A001SD001_long |> filter(!is.na(probability))
+
+# get only the unique species
+A001SD001_unique <- A001SD001_sightings |> select(species) |> unique()
+```
+
+### A002SD013
+
+```{r}
+A002SD013 <- read_csv(here("Output/output_A002_SD013.csv"))
+
+# clean it up
+A002SD013_long <- A002SD013 |> relocate(file) |>
+  pivot_longer(4:ncol(A002SD013), names_to = "species", values_to = "probability") |>
+  mutate(date = str_sub(file, start = 1, end = 8),
+          hour = str_sub(file, 10, 11),
+          minute = str_sub(file, 12, 13),
+          second = str_sub(file, 14, 15)) |>
+  unite("date_time", c("date", "hour", "minute", "second"), sep = ":") |>
+  mutate(date_time = ymd_hms(date_time),
+          time = as_hms(date_time))
+
+A002SD013_sightings <- A002SD013_long |> filter(!is.na(probability))
+
+A002SD013_unique <- A002SD013_sightings |> select(species) |> unique()
+```
+
+### Anti join:
+
+```{r}
+anti_join(A001SD001_unique, generated, by = c("species" = "Species"))
+```
+
+Added any species to "species_list.txt" that are found to be native to the list:
+
+Pseudacris crucifer_Spring Peeper            
+Lithobates palustris_Pickerel Frog
+
+Now let's try with the other output:
+
+```{r}
+anti_join(A002SD013_unique, generated, by = c("species" = "Species"))
+```
+
+Species to add:
+
+Aegolius acadicus_Northern Saw-whet Owl
+Strix varia_Barred Owl
+Bombycilla cedrorum_Cedar Waxwing 

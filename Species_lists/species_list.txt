@@ -1,5 +1,8 @@
 Lithobates palustris_Pickerel Frog
 Pseudacris crucifer_Spring Peeper
+Aegolius acadicus_Northern Saw-whet Owl
+Strix varia_Barred Owl
+Bombycilla cedrorum_Cedar Waxwing
 Turdus migratorius_American Robin
 Corvus brachyrhynchos_American Crow
 Poecile atricapillus_Black-capped Chickadee

@@ -15,7 +15,7 @@ library(here)
 ## Data
 
 ```{r}
-unfiltered_species <- read_csv(here("Species_lists/Ebird_species.csv"))
+unfiltered_species <- read_csv(here("Species_lists/ebird_all_time_sightings.csv"))
 common_names <- read_csv("Species_lists/Species_verification.csv")
 ```
 
@@ -88,6 +88,7 @@ ebird_comb <- ebird_df |> select(2:3) |> unite(col = "Combined_name", sep = "_")
 
 write_csv(ebird_comb, here("Species_lists/ebird_species_list.csv"))
 ```
+
 
 ## Anti-join with BirdNet Generated List
 
@@ -163,3 +164,14 @@ Species to add:
 Aegolius acadicus_Northern Saw-whet Owl
 Strix varia_Barred Owl
 Bombycilla cedrorum_Cedar Waxwing 
+
+### Finding the problematic species in the proposed list 
+
+```{r}
+anti_join(cleaned, generated, by = c("Combined_Name" = "Species")) |> select(Combined_Name) |> 
+    print(n = 73)
+```
+
+Now I will use birdnet to see if these species not included by birdnet's generated list will work. 
+
+

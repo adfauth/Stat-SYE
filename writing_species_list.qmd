@@ -121,6 +121,12 @@ A001SD001_sightings <- A001SD001_long |> filter(!is.na(probability))
 A001SD001_unique <- A001SD001_sightings |> select(species) |> unique()
 ```
 
+#### Saving data as csv
+
+```{r}
+write_csv(A001SD001_sightings, here("A001SD001_sightings.csv"))
+```
+
 ### A002SD013
 
 ```{r}
@@ -140,6 +146,12 @@ A002SD013_long <- A002SD013 |> relocate(file) |>
 A002SD013_sightings <- A002SD013_long |> filter(!is.na(probability))
 
 A002SD013_unique <- A002SD013_sightings |> select(species) |> unique()
+```
+
+#### Saving data as csv
+
+```{r}
+write_csv(A002SD013_sightings, here("A002SD013_sightings.csv"))
 ```
 
 ### Anti join:
@@ -169,7 +181,7 @@ Bombycilla cedrorum_Cedar Waxwing
 
 ```{r}
 anti_join(cleaned, generated, by = c("Combined_Name" = "Species")) |> select(Combined_Name) |> 
-    print(n = 73)
+    view()
 ```
 
 Now I will use birdnet to see if these species not included by birdnet's generated list will work. 

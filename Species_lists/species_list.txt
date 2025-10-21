@@ -1,3 +1,18 @@
+Buteo lineatus_Red-shouldered Hawk
+Dumetella carolinensis_Gray Catbird
+Bombycilla cedrorum_Cedar Waxwing
+Vireo olivaceus_Red-eyed Vireo
+Catharus ustulatus_Swainson's Thrush
+Setophaga ruticilla_American Redstart
+Setophaga americana_Northern Parula
+Setophaga magnolia_Magnolia Warbler
+Passerina cyanea_Indigo Bunting
+Gallinula galeata_Common Gallinule
+Strix varia_Barred Owl
+Geothlypis trichas_Common Yellowthroat
+Rallus limicola_Virginia Rail
+Melospiza lincolnii_Lincoln's Sparrow
+Troglodytes aedon_Northern House Wren
 Lithobates palustris_Pickerel Frog
 Pseudacris crucifer_Spring Peeper
 Aegolius acadicus_Northern Saw-whet Owl

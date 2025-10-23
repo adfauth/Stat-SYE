@@ -1,6 +1,7 @@
 library(tidyverse)
+library(here)
 
-birdnet_results <- read_csv("output_A002_SD013.csv", guess_max = 10000)
+birdnet_results <- read_csv(here("Output/output_A001_SD001_peeper.csv"), guess_max = 10000)
 problems(birdnet_results) |> print(n = Inf)
 
 View(birdnet_results)
@@ -34,3 +35,4 @@ ggplot(data = birdnet_most_prob, aes(x = time, y = species)) +
   geom_jitter(aes(colour = probability), alpha = 0.5, height = 0.25) +
   theme_minimal() +
   scale_colour_viridis_c()
+

@@ -1,7 +1,7 @@
 library(tidyverse)
 library(here)
 
-birdnet_results <- read_csv(here("Output/output_A002_SD013_full_sp.csv"), guess_max = 10000)
+birdnet_results <- read_csv(here("Output/output_A001_SD001_peeper"), guess_max = 10000)
 problems(birdnet_results) |> print(n = Inf)
 
 View(birdnet_results)

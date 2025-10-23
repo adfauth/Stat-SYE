@@ -1,0 +1,65 @@
+---
+title: "Untitled"
+format: html
+---
+
+
+```{r}
+peeper <- read_csv(here("Output/output_A001_SD001_peeper.csv"))
+no_peep <- read_csv(here("Output/output_A001_SD001_no_sp.csv"))
+```
+
+Peeper
+
+```{r}
+birdnet_long_peep <- peeper |> relocate(file) |>
+  pivot_longer(4:ncol(peeper), names_to = "species", values_to = "probability") |>
+  mutate(date = str_sub(file, start = 1, end = 8),
+          hour = str_sub(file, 10, 11),
+          minute = str_sub(file, 12, 13),
+          second = str_sub(file, 14, 15)) |>
+  unite("date_time", c("date", "hour", "minute", "second"), sep = ":") |>
+  mutate(date_time = ymd_hms(date_time),
+          time = as_hms(date_time))
+
+birdnet_sightings_peep <- birdnet_long_peep |> filter(!is.na(probability))
+
+birdnet_most_prob_peep <- birdnet_sightings_peep |> group_by(file, start, end) |>
+  ## filter(probability == max(probability)) |>
+  filter(probability >= 0.75) |> 
+  ungroup() |> ## minimum probability to show in plot
+  mutate(species = fct_infreq(species)) |>
+  mutate(species = fct_rev(species))
+```
+
+No peep
+
+```{r}
+birdnet_long_no <- no_peep |> relocate(file) |>
+  pivot_longer(4:ncol(no_peep), names_to = "species", values_to = "probability") |>
+  mutate(date = str_sub(file, start = 1, end = 8),
+          hour = str_sub(file, 10, 11),
+          minute = str_sub(file, 12, 13),
+          second = str_sub(file, 14, 15)) |>
+  unite("date_time", c("date", "hour", "minute", "second"), sep = ":") |>
+  mutate(date_time = ymd_hms(date_time),
+          time = as_hms(date_time))
+
+birdnet_sightings_no <- birdnet_long_no |> filter(!is.na(probability))
+
+birdnet_most_prob_no <- birdnet_sightings_no |> group_by(file, start, end) |>
+  ## filter(probability == max(probability)) |>
+  filter(probability >= 0.75) |> 
+  ungroup() |> ## minimum probability to show in plot
+  mutate(species = fct_infreq(species)) |>
+  mutate(species = fct_rev(species))
+```
+
+
+```{r}
+peepers <- birdnet_most_prob_peep |> filter(species == "Pseudacris crucifer_Spring Peeper")
+
+test <- semi_join(birdnet_most_prob_no, peepers, join_by(date_time == date_time, start == start))
+
+semi_join(birdnet_long_peep, test)
+```

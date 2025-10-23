@@ -1,5 +1,13 @@
 # Task List
 
+## For October 30
+
+1. Run two more through without a species list and see if anything new pops up.
+
+2. Run a few more with the species list.
+
+3. Start looking at the results from the audiomoths with the species list.
+
 ## For October 23
 
 1. Antijoin the current species list with the species detected through the two audiomoths and add missing species that make sense.

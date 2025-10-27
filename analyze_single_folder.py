@@ -5,17 +5,17 @@ import time
 
 import pandas as pd
 
-folder_path = Path("A001_SD001")
+folder_path = Path("A004_SD012")
 audio_files = list(folder_path.glob("*.WAV"))
 audio_files
 
 
-species_list_path = Path("species_list.txt")
+#species_list_path = Path("species_list.txt")
 
 
 
-with species_list_path.open() as f:
-    species_list = {line.strip() for line in f if line.strip()}  # ✅ curly braces = set
+#with species_list_path.open() as f:
+   # species_list = {line.strip() for line in f if line.strip()}  # ✅ curly braces = set
 
 
 
@@ -32,7 +32,7 @@ for audio_path in audio_files:
             audio_path,
             min_confidence=0.4,
             chunk_overlap_s=0.0,
-            species_filter= species_list
+            #species_filter= species_list
 
         )
     )

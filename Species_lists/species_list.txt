@@ -69,6 +69,8 @@ Loxia curvirostra_Red Crossbill
 Podiceps grisegena_Red-necked Grebe
 Pseudacris crucifer_Spring Peeper
 Lithobates palustris_Pickerel Frog
+Lithobates sylvaticus_Wood Frog
+Lithobates catesbeianus_American Bullfrog
 Aegolius acadicus_Northern Saw-whet Owl
 Strix varia_Barred Owl
 Bombycilla cedrorum_Cedar Waxwing

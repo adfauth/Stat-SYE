@@ -1,3 +1,10 @@
+Pseudacris crucifer_Spring Peeper
+Lithobates palustris_Pickerel Frog
+Lithobates sylvaticus_Wood Frog
+Lithobates catesbeianus_American Bullfrog
+Lithobates clamitans_Green Frog
+Megascops asio_Eastern Screech-Owl
+Chordeiles minor_Common Nighthawk
 Buteo lineatus_Red-shouldered Hawk
 Dumetella carolinensis_Gray Catbird
 Vireo olivaceus_Red-eyed Vireo
@@ -67,10 +74,6 @@ Petrochelidon pyrrhonota_Cliff Swallow
 Geothlypis philadelphia_Mourning Warbler
 Loxia curvirostra_Red Crossbill
 Podiceps grisegena_Red-necked Grebe
-Pseudacris crucifer_Spring Peeper
-Lithobates palustris_Pickerel Frog
-Lithobates sylvaticus_Wood Frog
-Lithobates catesbeianus_American Bullfrog
 Aegolius acadicus_Northern Saw-whet Owl
 Strix varia_Barred Owl
 Bombycilla cedrorum_Cedar Waxwing

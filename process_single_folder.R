@@ -1,7 +1,7 @@
 library(tidyverse)
 library(here)
 
-birdnet_results <- read_csv(here("Output/output_A003_SD005_no_list.csv"), guess_max = 10000)
+birdnet_results <- read_csv(here("Output/output_A004_SD012_no_list.csv"), guess_max = 10000)
 problems(birdnet_results) |> print(n = Inf)
 
 species_list <- read_delim(here("Species_lists/species_list.txt"), delim = "\n", col_names = FALSE)
@@ -37,4 +37,8 @@ ggplot(data = birdnet_most_prob, aes(x = time, y = species)) +
   geom_jitter(aes(colour = probability), alpha = 0.5, height = 0.25) +
   theme_minimal() +
   scale_colour_viridis_c()
+
+
+anti_join(distinct(birdnet_sightings, species), 
+species_list, join_by(species == X1)) |> print(n = 75)
 

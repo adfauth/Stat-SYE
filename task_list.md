@@ -1,5 +1,9 @@
 # Task List
 
+## For November 6
+
+1. Run through some more folders and record any new species.
+
 ## For October 30
 
 1. Run two more through without a species list and see if anything new pops up.

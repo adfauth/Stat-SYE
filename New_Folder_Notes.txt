@@ -10,7 +10,7 @@ A003_SD005 Notes:
 
 * Added Wood Frog (saw it in initial graph)
 
-Rock Wren seemed to rare in our area to add (but did have one high prob ID)
+Rock Wren seemed too rare in our area to add (but did have one high prob ID)
 
 *** Townsend's Solitaire is found in our area and could be added, but it is not in the most probable species (over 75%)
 
@@ -63,6 +63,13 @@ A005_SD002 Notes:
 *** Townsend's Solitare again - sightings in our area but has shown up in two folders. More known in the Western U.S.
 
 *** Pine Grosbeak - should add to list (high prob in this folder and found in our area)
+
+Engine again
+
+Barnacle goose? Rare, but possible
+
+
+
 
 
 

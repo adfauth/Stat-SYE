@@ -1,5 +1,11 @@
 # Task List
 
+## For November 13
+
+1. Run through some more folders and record any new species.
+
+2. Keep track of the non-species list data files (and start to do some more visualization?)
+
 ## For November 6
 
 1. Run through some more folders and record any new species.

@@ -1,0 +1,12 @@
+This is metadata regarding any sound files that had to be removed from AudioMoth folders during analysis.
+
+A006_SD006:
+
+20240416_163400.WAV was removed because the file could not be opened. 
+
+Had a file size of 0:
+
+20240416_163100.WAV
+20240416_163200.WAV
+20240416_163300.WAV
+20240416_163500.WAV

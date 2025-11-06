@@ -10,63 +10,67 @@ A003_SD005 Notes:
 
 * Added Wood Frog (saw it in initial graph)
 
-Rock Wren seemed too rare in our area to add (but did have one high prob ID)
+* Rock Wren seemed too rare in our area to add (but did have one high prob ID)
 
-*** Townsend's Solitaire is found in our area and could be added, but it is not in the most probable species (over 75%)
+* Townsend's Solitaire is found in our area and could be added, but it is not in the most probable species (over 75%)
 
-*** Trumpeter Swan is definitely found in the area (but not forests), and has some high propbability IDs (but not many)
+* Trumpeter Swan is definitely found in the area (but not forests), and has some high propbability IDs (but not many)
 
-*** Got a tree cricket? Idk if we want to bother adding insects to the mix (doesn't have any high prob IDs)
+* Got a tree cricket? Idk if we want to bother adding insects to the mix (doesn't have any high prob IDs)
 
-*** Slender Meadow Katydid (doesn't have any high prob IDs)
+* Slender Meadow Katydid (doesn't have any high prob IDs)
 
-*** Yellow Rail found in the county but not most probable ID
+* Yellow Rail found in the county but not most probable ID
 
 * Added American Bullfrog
 
-*** Brant is found in our area but doesn't have any high prob IDs
+* Brant is found in our area but doesn't have any high prob IDs
 
 
 A004_SD012 Notes:
 
 Engine noise?
 
-Black-billed Magpie not really found in our area but can be found in the NE
+* Black-billed Magpie not really found in our area but can be found in the NE
 
-*** Brant again (also in A003SD005)
+* Brant again (also in A003SD005)
 
-Say's Pheobe is not really found in our area, but can be found in the NE
+* Say's Pheobe is not really found in our area, but can be found in the NE
 
-Human vocal?
+* Human vocal?
 
-Rock Wren again (see A003SD005)
+* Rock Wren again (see A003SD005)
 
 Leach's Storm-Petrel not really found in NY
 
 Anna's Hummingbird really not found in our area
 
-*** Varied Thrush rare in our area and doesn't have any high prob IDs, but could be added.
+* Varied Thrush rare in our area and doesn't have any high prob IDs, but could be added.
 
 * Common Nighthawk - high prob and definitely found in our area (probably a species not normally seen)
 
 * Eastern Screech-Owl - honestly thought I added this species already
 
-Western Grebe some have been seen in our area (but I think they are rare)
+* Western Grebe some have been seen in our area (but I think they are rare)
 
-Western Kingbird some have been found in Upstate NY (not in our area though)
+* Western Kingbird some have been found in Upstate NY (not in our area though)
 
-*** Blue-gray Gnatcatcher more rare in the north country but still sightings
+* Blue-gray Gnatcatcher more rare in the north country but still sightings
 
 
 A005_SD002 Notes:
 
-*** Townsend's Solitare again - sightings in our area but has shown up in two folders. More known in the Western U.S.
+* Townsend's Solitare again - sightings in our area but has shown up in two folders. More known in the Western U.S.
 
-*** Pine Grosbeak - should add to list (high prob in this folder and found in our area)
+* Pine Grosbeak - should add to list (high prob in this folder and found in our area)
 
 Engine again
 
 Barnacle goose? Rare, but possible
+
+* Blue-gray Gnatcatcher - definitely add
+
+* Rock Wren again
 
 
 

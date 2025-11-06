@@ -1,3 +1,6 @@
+Engine_Engine
+Gun_Gun
+Human vocal_Human vocal
 Pseudacris crucifer_Spring Peeper
 Lithobates palustris_Pickerel Frog
 Lithobates sylvaticus_Wood Frog
@@ -189,3 +192,16 @@ Melanitta perspicillata_Surf Scoter
 Fulica americana_American Coot
 Aythya americana_Redhead
 Botaurus lentiginosus_American Bittern
+Pinicola enucleator_Pine Grosbeak
+Salpinctes obsoletus_Rock Wren
+Polioptila caerulea_Blue-gray Gnatcatcher
+Myadestes townsendi_Townsend's Solitaire
+Pica hudsonia_Black-billed Magpie
+Branta bernicla_Brant
+Sayornis saya_Say's Phoebe
+Aechmophorus occidentalis_Western Grebe
+Tyrannus verticalis_Western Kingbird
+Cygnus buccinator_Trumpeter Swan
+Oecanthus niveus_Narrow-winged Tree Cricket
+Conocephalus fasciatus_Slender Meadow Katydid
+Coturnicops noveboracensis_Yellow Rail

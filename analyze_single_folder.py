@@ -5,7 +5,7 @@ import time
 
 import pandas as pd
 
-folder_path = Path("A006_SD006")
+folder_path = Path("A007_SD017")
 audio_files = list(folder_path.glob("*.WAV"))
 audio_files
 
@@ -53,7 +53,7 @@ for audio_path in audio_files:
 
 all_dfs
 combined_df = pd.concat(all_dfs, ignore_index=True)
-combined_df.to_csv("output_A006_SD006_no_list.csv", index=False)
+combined_df.to_csv("output_A007_SD017_no_list.csv", index=False)
 
 
 

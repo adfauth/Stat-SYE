@@ -205,3 +205,10 @@ Cygnus buccinator_Trumpeter Swan
 Oecanthus niveus_Narrow-winged Tree Cricket
 Conocephalus fasciatus_Slender Meadow Katydid
 Coturnicops noveboracensis_Yellow Rail
+Canis latrans_Coyote
+Nycticorax nycticorax_Black-crowned Night-Heron
+Branta hutchinsii_Cackling Goose
+Dog_Dog
+Cygnus columbianus_Tundra Swan
+Accipiter gentilis_Northern Goshawk
+Stelgidopteryx serripennis_Northern Rough-winged Swallow

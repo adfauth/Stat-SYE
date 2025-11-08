@@ -73,7 +73,30 @@ Barnacle goose? Rare, but possible
 * Rock Wren again
 
 
+UPDATED SPECIES LIST ---------------------------------------------------------------------------
 
+
+A006_SD006
+
+* Canis latrans_Coyote
+
+* Nycticorax nycticorax_Black-crowned Night-Heron
+
+* Branta hutchinsii_Cackling Goose
+
+* Dog_Dog
+
+* Cygnus columbianus_Tundra Swan
+
+* Accipiter gentilis_Northern Goshawk
+
+* Stelgidopteryx serripennis_Northern Rough-winged Swallow
+
+
+UPDATED SPECIES LIST ---------------------------------------------------------------------------
+
+
+A007_SD017
 
 
 

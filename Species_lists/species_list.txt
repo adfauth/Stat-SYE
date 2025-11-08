@@ -212,3 +212,7 @@ Dog_Dog
 Cygnus columbianus_Tundra Swan
 Accipiter gentilis_Northern Goshawk
 Stelgidopteryx serripennis_Northern Rough-winged Swallow
+Euphagus cyanocephalus_Brewer's Blackbird
+Microcentrum rhombifolium_Greater Angle-wing
+Anser albifrons_Greater White-fronted Goose
+Coccyzus americanus_Yellow-billed Cuckoo

@@ -1,7 +1,7 @@
 library(tidyverse)
 library(here)
 
-birdnet_results <- read_csv(here("Output/output_A006_SD006_no_list.csv"), guess_max = 10000)
+birdnet_results <- read_csv(here("Output/output_A007_SD017_no_list.csv"), guess_max = 10000)
 problems(birdnet_results) |> print(n = Inf)
 
 species_list <- read_delim(here("Species_lists/species_list.txt"), delim = "\n", col_names = FALSE)

@@ -1,7 +1,11 @@
+Fireworks_Fireworks
 Siren_Siren
 Engine_Engine
 Gun_Gun
 Human vocal_Human vocal
+Dog_Dog
+Pseudacris triseriata_Striped Chorus Frog
+Anaxyrus americanus_American Toad
 Pseudacris crucifer_Spring Peeper
 Lithobates palustris_Pickerel Frog
 Lithobates sylvaticus_Wood Frog
@@ -209,7 +213,6 @@ Coturnicops noveboracensis_Yellow Rail
 Canis latrans_Coyote
 Nycticorax nycticorax_Black-crowned Night-Heron
 Branta hutchinsii_Cackling Goose
-Dog_Dog
 Cygnus columbianus_Tundra Swan
 Accipiter gentilis_Northern Goshawk
 Stelgidopteryx serripennis_Northern Rough-winged Swallow
@@ -224,3 +227,10 @@ Lanius borealis_Northern Shrike
 Corvus ossifragus_Fish Crow
 Amblycorypha longinicta_Common Virtuoso Katydid
 Sciurus carolinensis_Eastern Gray Squirrel
+Melanerpes erythrocephalus_Red-headed Woodpecker
+Gavia stellata_Red-throated Loon
+Odocoileus virginianus_White-tailed Deer
+Oecanthus exclamationis_Davis's Tree Cricket
+Scudderia texensis_Texas Bush Katydid
+Lanius ludovicianus_Loggerhead Shrike
+Picoides dorsalis_American Three-toed Woodpecker

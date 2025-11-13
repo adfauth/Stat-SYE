@@ -147,6 +147,42 @@ Whimbrel is found in NY but is a shore bird so pretty unlikely that there was on
 UPDATED SPECIES LIST ---------------------------------------------------------------------------
 
 
+A011_SD018:
+
+No new species
+
+
+A016_SD022:
+
+Melanerpes erythrocephalus_Red-headed Woodpecker
+
+Gavia stellata_Red-throated Loon
+
+
+A017_SD024:
+
+* Fireworks_Fireworks
+
+* Odocoileus virginianus_White-tailed Deer
+
+
+A018_SD011:
+
+* Oecanthus exclamationis_Davis's Tree Cricket
+
+* Scudderia texensis_Texas Bush Katydid
+
+
+A021_SD023:
+
+* Anaxyrus americanus_American Toad
+
+* Lanius ludovicianus_Loggerhead Shrike
+
+* Pseudacris triseriata_Striped Chorus Frog
+
+* Picoides dorsalis_American Three-toed Woodpecker
+
 
 
 

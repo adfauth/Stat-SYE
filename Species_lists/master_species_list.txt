@@ -1,3 +1,4 @@
+Siren_Siren
 Engine_Engine
 Gun_Gun
 Human vocal_Human vocal
@@ -216,3 +217,10 @@ Euphagus cyanocephalus_Brewer's Blackbird
 Microcentrum rhombifolium_Greater Angle-wing
 Anser albifrons_Greater White-fronted Goose
 Coccyzus americanus_Yellow-billed Cuckoo
+Ammospiza leconteii_LeConte's Sparrow
+Tamias striatus_Eastern Chipmunk
+Piranga rubra_Summer Tanager
+Lanius borealis_Northern Shrike
+Corvus ossifragus_Fish Crow
+Amblycorypha longinicta_Common Virtuoso Katydid
+Sciurus carolinensis_Eastern Gray Squirrel

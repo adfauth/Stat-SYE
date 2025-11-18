@@ -184,6 +184,38 @@ A021_SD023:
 * Picoides dorsalis_American Three-toed Woodpecker
 
 
+UPDATED SPECIES LIST--------------------------------------------------------------------
+
+
+A010_SD014:
+
+Kentucky Warbler - looks like they don't go far enough north to be in the North Country
+
+* Helmitheros vermivorum_Worm-eating Warbler
+
+
+A013_SD016:
+
+* Antrostomus vociferus_Eastern Whip-poor-will
+
+* Human non-vocal_Human non-vocal
+
+
+A019_SD008:
+
+No new species
+
+
+A022_SD019:
+
+King Rail - does have some hits in Great Lakes and upstate NY, but doesn't seem like it lives in the north country
+
+* Scudderia furcata_Fork-tailed Bush Katydid 
+
+* Protonotaria citrea_Prothonotary Warbler
+
+
+
 
 
 

@@ -1,13 +1,5 @@
 # Task List
 
-## For December 4
-
-1. Finish running the other audiomoth folders.
-
-2. Work on creating a "main" data frame with all of the results from running without a species list.
-
-3. Work on some visuals.
-
 ## For November 13
 
 1. Run through some more folders and record any new species.

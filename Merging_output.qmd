@@ -1,0 +1,31 @@
+---
+title: "Compiling a Main Data Frame"
+format: html
+---
+
+## Goal:
+
+In the following code, the output files from all the audio moth folders are compiled into a single 'main' data frame.
+
+
+## Set up
+
+```{r}
+rm(list = ls())
+library(tidyverse)
+library(hms)
+library(here)
+```
+
+
+## Save directory as a list of files
+
+Here we will take the folder containing all the output files and load them into list:
+
+```{r}
+
+```
+
+
+
+

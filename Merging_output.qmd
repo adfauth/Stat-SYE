@@ -18,14 +18,37 @@ library(here)
 ```
 
 
-## Save directory as a list of files
+## Compiling and Formatting Data Frame
 
 Here we will take the folder containing all the output files and load them into list:
 
 ```{r}
+file_list <- list.files(path = here("Output"), pattern = "no_list.csv$",)
 
+# read in all the files as dfs
+df_list <- map_dfr(file_list, read_csv, .id = "source_file")
+
+# process each df to then bind_rows
+cleaned_list <- map(df_list, \(x) x |> relocate(file) |>
+  pivot_longer(4:ncol(x), names_to = "species", values_to = "probability") |>
+  filter(!is.na(probability)))
+
+# compile into single df
+temp_df <- bind_rows(cleaned_list)
 ```
 
 
+### Create date and time variables
+
+```{r}
+main_df <- temp_df |> mutate(date = str_sub(file, start = 1, end = 8),
+          hour = str_sub(file, 10, 11),
+          minute = str_sub(file, 12, 13),
+          second = str_sub(file, 14, 15)) |>
+  unite("date_time", c("date", "hour", "minute", "second"), sep = ":") |>
+  mutate(date_time = ymd_hms(date_time),
+          time = as_hms(date_time))
+```
 
 
+## Unite with Audio Moth Deployments

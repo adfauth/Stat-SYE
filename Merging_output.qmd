@@ -117,3 +117,23 @@ ggplot(data = eclipse_day, aes(x = time, y = id)) +
   theme_minimal() +
   scale_colour_viridis_c()
 ```
+
+Is there more of a trend with the higher probability identifications?
+
+```{r}
+eclipse_day_mp <- eclipse_day |> filter(probability > 0.75)
+
+ggplot(data = eclipse_day_mp, aes(x = time, y = id)) +
+  geom_jitter(aes(colour = probability), alpha = 0.5, height = 0.25) +
+  facet_wrap(~species)+
+  theme_minimal() +
+  scale_colour_viridis_c()
+```
+
+
+
+
+
+
+
+

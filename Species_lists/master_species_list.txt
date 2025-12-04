@@ -5,6 +5,8 @@ Gun_Gun
 Human vocal_Human vocal
 Human non-vocal_Human non-vocal
 Dog_Dog
+Acris crepitans_Northern Cricket Frog
+Dryophytes versicolor_Gray Treefrog
 Pseudacris triseriata_Striped Chorus Frog
 Anaxyrus americanus_American Toad
 Pseudacris crucifer_Spring Peeper

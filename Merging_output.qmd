@@ -26,12 +26,18 @@ Here we will take the folder containing all the output files and load them into 
 file_list <- list.files(path = here("Output"), pattern = "no_list.csv$",)
 
 # read in all the files as dfs
-df_list <- map_dfr(file_list, read_csv, .id = "source_file")
+df_list <- map(file_list, \(x) read_csv(here("Output", x)))
 
 # process each df to then bind_rows
 cleaned_list <- map(df_list, \(x) x |> relocate(file) |>
   pivot_longer(4:ncol(x), names_to = "species", values_to = "probability") |>
   filter(!is.na(probability)))
+
+# add a column with the AM name
+for (i in 1:length(cleaned_list)){
+  cleaned_list[[i]] <- cleaned_list[[i]] |> 
+    mutate(id = str_sub(file_list[[i]], start = 8, end = 17))
+}
 
 # compile into single df
 temp_df <- bind_rows(cleaned_list)
@@ -52,3 +58,62 @@ main_df <- temp_df |> mutate(date = str_sub(file, start = 1, end = 8),
 
 
 ## Unite with Audio Moth Deployments
+
+Take a look at the deployment df
+```{r}
+deploy <- read_csv(here("eclipse_audio_moth_deployments.csv"))
+glimpse(deploy)
+```
+
+To merge the two data frames I need to create a new variable in the output df that will match with the `recorder_lab_id_num`
+
+```{r}
+main_df <- main_df |> mutate(AM_id = 
+  as.numeric(str_extract(id, "[1-9][0-9]*")))
+```
+
+Now we can merge using a left join:
+
+```{r}
+merged_df <- left_join(main_df, deploy, 
+join_by(AM_id == recorder_lab_id_num))
+```
+
+## Visualizations
+
+Let's see the most common species across the entire array of AMs.
+
+```{r}
+merged_df |> group_by(species) |> 
+  summarise(count = n()) |> 
+  arrange(desc(count)) |> 
+  slice(1:10)
+```
+
+Let's make a plot of the top 4 species:
+
+```{r}
+plot_df <- merged_df |> 
+  filter(species == "Pseudacris crucifer_Spring Peeper" |
+  species == "Branta canadensis_Canada Goose" |
+  species == "Lithobates sylvaticus_Wood Frog" |
+  species == "Lithobates palustris_Pickerel Frog")
+
+ggplot(data = plot_df, aes(x = time, y = id)) +
+  geom_jitter(aes(colour = probability), alpha = 0.5, height = 0.25) +
+  facet_wrap(~species)+
+  theme_minimal() +
+  scale_colour_viridis_c()
+```
+
+Let's filter for the day of the eclipse:
+
+```{r}
+eclipse_day <- plot_df |> filter(as_date(date_time) == "2024-04-08")
+
+ggplot(data = eclipse_day, aes(x = time, y = id)) +
+  geom_jitter(aes(colour = probability), alpha = 0.5, height = 0.25) +
+  facet_wrap(~species)+
+  theme_minimal() +
+  scale_colour_viridis_c()
+```

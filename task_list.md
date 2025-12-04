@@ -1,5 +1,11 @@
 # Task List
 
+## For December 11
+
+1. Refine visuals to focus in on the eclipse time and a few days surrounding the eclipse. 
+
+2. Pick 5 or so files that have the most common non-native species and see if there is any patterning.
+
 ## For December 4
 
 1. Finish running the other audiomoth folders.

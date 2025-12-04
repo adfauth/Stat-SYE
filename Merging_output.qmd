@@ -97,7 +97,7 @@ plot_df <- merged_df |>
   filter(species == "Pseudacris crucifer_Spring Peeper" |
   species == "Branta canadensis_Canada Goose" |
   species == "Lithobates sylvaticus_Wood Frog" |
-  species == "Lithobates palustris_Pickerel Frog")
+  species == "Turdus migratorius_American Robin")
 
 ggplot(data = plot_df, aes(x = time, y = id)) +
   geom_jitter(aes(colour = probability), alpha = 0.5, height = 0.25) +

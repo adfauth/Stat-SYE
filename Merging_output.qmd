@@ -130,9 +130,105 @@ ggplot(data = eclipse_day_mp, aes(x = time, y = id)) +
   scale_colour_viridis_c()
 ```
 
+### Focusing on eclipse time
 
+We want select for the time-frame of the eclipse.
 
+First, I want to look at the top 10 species that actually called during the eclipse day
 
+```{r}
+merged_df |> filter(as_date(date_time) == "2024-04-08") |> 
+  group_by(species) |> 
+  summarise(count = n()) |> 
+  arrange(desc(count)) |> 
+  slice(1:10)
+```
+
+Now instead of faceting by species, we will filter for one species and facet by day:
+
+Let's get a general df for these graphs
+
+```{r}
+days <- c(7:9)
+focused_time <- merged_df |> filter(day(date_time) %in% days) |> 
+  filter(hour(date_time) >= 13 & hour(date_time) <= 17)
+```
+
+#### Spring Peeper
+
+```{r}
+sp <- focused_time |> filter(species == "Pseudacris crucifer_Spring Peeper") |> 
+  filter(probability >= 0.75) # there are a lot of s. peeper points
+
+ggplot(data = sp, aes(x = time, y = id)) +
+  geom_jitter(aes(colour = probability), alpha = 0.5, height = 0.25) +
+  facet_wrap(~day(date_time))+
+  theme_minimal() +
+  scale_colour_viridis_c()
+```
+
+For the rest let's try birds as they might be influenced differently
+
+#### Robin
+
+```{r}
+robin <- focused_time |> filter(species == "Turdus migratorius_American Robin")
+
+ggplot(data = robin, aes(x = time, y = id)) +
+  geom_jitter(aes(colour = probability), alpha = 0.5, height = 0.25) +
+  facet_wrap(~day(date_time))+
+  theme_minimal() +
+  scale_colour_viridis_c()
+```
+
+#### Brown Creeper
+
+```{r}
+bc <- focused_time |> filter(species == "Certhia americana_Brown Creeper")
+
+ggplot(data = bc, aes(x = time, y = id)) +
+  geom_jitter(aes(colour = probability), alpha = 0.5, height = 0.25) +
+  facet_wrap(~day(date_time))+
+  theme_minimal() +
+  scale_colour_viridis_c()
+```
+
+#### Rusty Blackbird
+
+```{r}
+rb <- focused_time |> filter(species == "Euphagus carolinus_Rusty Blackbird")
+
+ggplot(data = rb, aes(x = time, y = id)) +
+  geom_jitter(aes(colour = probability), alpha = 0.5, height = 0.25) +
+  facet_wrap(~day(date_time))+
+  theme_minimal() +
+  scale_x_time(date_breaks = "30 min")+
+  scale_colour_viridis_c()
+```
+
+#### Song sparrow
+
+```{r}
+sparrow <- focused_time |> filter(species == "Melospiza melodia_Song Sparrow")
+
+ggplot(data = sparrow, aes(x = time, y = id)) +
+  geom_jitter(aes(colour = probability), alpha = 0.5, height = 0.25) +
+  facet_wrap(~day(date_time))+
+  theme_minimal() +
+  scale_colour_viridis_c()
+```
+
+#### Common Grackle
+
+```{r}
+grackle <- focused_time |> filter(species == "Quiscalus quiscula_Common Grackle")
+
+ggplot(data = grackle, aes(x = time, y = id)) +
+  geom_jitter(aes(colour = probability), alpha = 0.5, height = 0.25) +
+  facet_wrap(~day(date_time))+
+  theme_minimal() +
+  scale_colour_viridis_c()
+```
 
 
 

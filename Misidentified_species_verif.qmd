@@ -1,0 +1,93 @@
+---
+title: "Manually Verifying Misidentified Species"
+format: html
+---
+
+## Investigating Misidentified Species
+
+There are a lot of species identified by BirdNet that don't live in St. Lawrence County, let alone the United States. We need to understand what is happening with BirdNet that causes these identification whether it's two species getting confused with eachother, multiple species calling at the same time causing an misidentification, a hallucination, or a mix of various factors.
+
+In the top ten most common calls identified by BirdNet there are two species that are repeatedly identified, but don't live in the United States: the Akohekohe and Spotted Crake.
+
+According to Ebird the Akohekohe makes a "varied series of gurgles, whistles, and buzzes." -- There's a possibility that BirdNet is confusing this bird as various other calls. 
+
+The Spotted Crake "Song is a series of repeated 'huit, huit, huit' notes." -- Possibly confused with Peepers?
+
+Now I will try to validate calls from these species to see if I can identify the actual species.
+
+I feel more confident in identifying the Spotted Crake, so I will look at 5 files with Spotted Crake calls.
+
+## Code:
+
+Note: run Merging_output.qmd first!
+
+```{r}
+main_df |> filter(species == "Porzana porzana_Spotted Crake") |> 
+    group_by(id, file) |> 
+    summarise(count = n()) |> 
+    arrange(desc(count))
+
+list1 <- c("20240405_154700.WAV", "20240405_142200.WAV", "20240405_152700.WAV")
+
+list2 <- c("20240406_155700.WAV", "20240410_150500.WAV")
+
+main_df |> filter(id == "A006_SD006" & file %in% list1) |> print(n = 45)
+
+main_df |> filter(id == "A005_SD002" & file %in% list2) |> print(n = 45)
+```
+
+I want different AM locations and files with a lot of calls
+
+File List:
+
+1. A006_SD006 20240405_154700.WAV
+2. A006_SD006 20240405_142200.WAV
+3. A006_SD006 20240405_152700.WAV
+4. A005_SD002 20240406_155700.WAV
+5. A005_SD002 20240410_150500.WAV
+
+
+## Notes
+
+### 20240405_154700.WAV
+
+It's raining and there's some faint chirping in the background, but I couldn't tell what bird/frog it was being confused with. However, it says it is calling for the entire file and the chirping eventually goes away.
+
+### 20240405_142200.WAV
+
+It's raining still and I can't distinguish what it's getting confused with. There is nothing in this audio clip that sounds anything like the call I found on Ebird.
+
+### 20240405_152700.WAV
+
+Still raining and I did not hear many calls at all.
+
+### 20240406_155700.WAV
+
+New folder and it's super windy in the clip
+
+### 20240410_150500.WAV
+
+Just wind and rain again
+
+
+## New folder
+
+I want to try some other folders to see if there are any that are not windy and rainy:
+
+```{r}
+main_df |> filter(species == "Porzana porzana_Spotted Crake") |> 
+    filter(id != "A006_SD006" & id != "A005_SD002") |> 
+    group_by(id, file) |> 
+    summarise(count = n()) |> 
+    arrange(desc(count))
+```
+
+A007_SD017 is the only folder that I currently have downloaded -- let's look some files in there.
+
+### 20240409_151500.WAV
+
+Wind and running water?
+
+### 20240409_142200.WAV
+
+Some birds calling, but nothing that sounds anything like the Spotted Crake

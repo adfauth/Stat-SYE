@@ -1,5 +1,9 @@
 # Task List
 
+## For End of Semester
+
+1. Git reorganization and cleanup.
+
 ## For December 11
 
 1. Refine visuals to focus in on the eclipse time and a few days surrounding the eclipse. 

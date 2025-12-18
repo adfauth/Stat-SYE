@@ -148,11 +148,91 @@ Now instead of faceting by species, we will filter for one species and facet by 
 
 Let's get a general df for these graphs
 
+MH Start
+
 ```{r}
-days <- c(7:9)
-focused_time <- merged_df |> filter(day(date_time) %in% days) |> 
-  filter(hour(date_time) >= 13 & hour(date_time) <= 17)
+days <- c(1:15)
+
+## units are all in seconds since midnight
+
+## create a vector of seconds that I want to add and subtract to and from
+## the time of totality
+interval_range <- (c(seq(30, 3030, by = 60)))
+mid_point <- as_hms("15:25:30") |> as.numeric() ## time of totality
+
+## convert time to seconds since midnight
+merged_df <- merged_df |> mutate(time_basic = as_hms(time) |> as.numeric()) |>
+  relocate(time_basic)
+## only look at April 1 through 15
+focused_time <- merged_df |> filter(day(date_time) %in% days)
 ```
+
+```{r}
+## filter hits (of any species) based on a provided "interval" value
+## interval could be named better: it is really just the number of seconds
+## we are adding and subtracting from the time of totality
+## to create an interval
+filter_interval <- function(mid_point, df, interval, min_prob) {
+  df |> filter(time_basic >= mid_point - interval & time_basic <= mid_point + interval) |>
+    mutate(interval_size = interval * 2) |>
+    filter(probability >= min_prob)
+}
+
+## map through the function to get one data set filtered by each of the values in
+## the interval_range variable
+
+## goal: see how the number of hits changes as we get a wider and wider interval around the eclipse
+## map through the function for the different interval sizes
+dfs <- map_dfr(interval_range, filter_interval,
+               mid_point = as_hms("15:25:30") |> as.numeric(),
+               df = focused_time, min_prob = 0.75) |>
+                   mutate(day = day(date_time),
+                          month = month(date_time),
+                          eclipse_ind = if_else(day == "8" & month == "4",
+                                                true = "eclipse",
+                                        false = "non-eclipse"))
+
+## grab total number of detections (of any species) for each interval for
+## each day for each month (only looking at April here, but wanted
+## this to generalize to March if we included it).
+df_count <- dfs |> group_by(day, month, interval_size) |>
+  summarise(n_hits = n(),
+    eclipse_ind = first(eclipse_ind))
+
+## n_hits is cumulative for larger and larger interval sizes
+## new_hits is the number of unique hits for each increasing interval 
+## e.g., if there were 50 hits in the minute surrounding the eclipse and 
+## 150 hits in the two minutes surrounding the eclipse, then
+## n_hits would be (50, 200) and new_hits would be (50, 150)
+df_count <- df_count |> group_by(day, month) |>
+  mutate(n_hits_lag = lag(n_hits),
+         n_hits_lag = if_else(is.na(n_hits_lag), true = 0, false = n_hits_lag)) |>
+  mutate(new_hits = n_hits - n_hits_lag)
+
+## this first one is rate
+ggplot(data = df_count, aes(x = interval_size, y = n_hits)) +
+  geom_line(aes(group = day, colour = eclipse_ind), alpha = 0.5) +
+  scale_colour_viridis_d() +
+  theme_minimal()
+
+## this second one is just the raw number of new hits as the interval size
+## surrounding the eclipse slowly increases by 1 minute on each side,
+## centered at totality
+
+## this suggests that there is an increase in overall call rate
+## during the eclipse but that we are looking too far out
+## the increasing amount of calls peters off as we get further from 
+## totality and is no different than other days past
+## an interval size of about 2000 seconds (which roughly 
+## corresponds to adding and subtracting 30 minutes from the time of totality)
+ggplot(data = df_count, aes(x = interval_size, y = new_hits)) +
+  geom_line(aes(group = day, colour = eclipse_ind), alpha = 0.5) +
+  scale_colour_viridis_d() +
+  theme_minimal()
+
+```
+
+MH End
 
 #### Spring Peeper
 
@@ -179,6 +259,13 @@ ggplot(data = robin, aes(x = time, y = id)) +
   facet_wrap(~day(date_time))+
   theme_minimal() +
   scale_colour_viridis_c()
+```
+
+```{r}
+focused_time |> ##filter(species == "Melospiza melodia_Song Sparrow") |> 
+  filter(probability >= 0.75) |>
+  group_by(day(date_time)) |>
+  summarise(n = n())
 ```
 
 #### Brown Creeper

@@ -1,5 +1,11 @@
 # Task List
 
+## For January 29
+
+1. Exploratory Plots
+
+2. If you have time, start the basic logistic regression model.
+
 ## For End of Semester
 
 1. Git reorganization and cleanup.

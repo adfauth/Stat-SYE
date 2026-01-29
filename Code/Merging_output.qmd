@@ -61,7 +61,7 @@ main_df <- temp_df |> mutate(date = str_sub(file, start = 1, end = 8),
 
 Take a look at the deployment df
 ```{r}
-deploy <- read_csv(here("eclipse_audio_moth_deployments.csv"))
+deploy <- read_csv(here("Data/eclipse_audio_moth_deployments.csv"))
 glimpse(deploy)
 ```
 
@@ -315,6 +315,150 @@ ggplot(data = grackle, aes(x = time, y = id)) +
   facet_wrap(~day(date_time))+
   theme_minimal() +
   scale_colour_viridis_c()
+```
+
+
+## Exploratory plots
+
+Need to turn the data into binary data for logistic regression.
+
+Currently the data has 'gaps' due to the times where nothing was detected being filtered out.
+
+Another thing to not is that there are no seconds in any of the time or date-time variables, but I can add them using either the start or end time of each clip. I think the start time makes more sense.
+```{r}
+# eclipse time: 15:25:30
+interval_start <- ymd_hms("2024-04-08 14:55:30")
+interval_end <- ymd_hms("2024-04-08 15:55:30")
+
+binary_full <- merged_df |> filter(date(date_time) == "2024-04-08") |>
+  mutate(new_date_time = date_time + seconds(start)) |> 
+  filter(between(new_date_time, interval_start, interval_end)) |>
+  complete(new_date_time = seq(interval_start, interval_end, by = "1 sec"), 
+  fill = list(value = NA)) |> 
+    mutate(Presence = if_else(!is.na(probability),
+    true = 1,
+    false = 0)) |> 
+      relocate(Presence, probability)
+
+ggplot(binary_full, aes(as_hms(new_date_time), Presence))+
+  geom_jitter(width = 0, height = 0.05)+
+  theme_minimal()
+```
+
+Too hard to see. Let's look at some specific species:
+
+#### Grackle
+
+```{r}
+binary_grackle <- merged_df |> filter(date(date_time) == "2024-04-08") |>
+  mutate(new_date_time = date_time + seconds(start)) |> 
+  filter(between(new_date_time, interval_start, interval_end)) |>
+  filter(species == "Quiscalus quiscula_Common Grackle") |> 
+  complete(new_date_time = seq(interval_start, interval_end, by = "1 sec"), 
+  fill = list(value = NA)) |> 
+    mutate(Presence = if_else(!is.na(probability),
+    true = 1,
+    false = 0)) |> 
+      relocate(Presence, probability)
+
+ggplot(binary_grackle, aes(as_hms(new_date_time), Presence))+
+  geom_jitter(width = 0, height = 0.05)+
+  theme_minimal()
+```
+
+#### Rusty Blackbird
+
+```{r}
+binary_rb <- merged_df |> filter(date(date_time) == "2024-04-08") |>
+  mutate(new_date_time = date_time + seconds(start)) |> 
+  filter(between(new_date_time, interval_start, interval_end)) |>
+  filter(species == "Euphagus carolinus_Rusty Blackbird") |> 
+  complete(new_date_time = seq(interval_start, interval_end, by = "1 sec"), 
+  fill = list(value = NA)) |> 
+    mutate(Presence = if_else(!is.na(probability),
+    true = 1,
+    false = 0)) |> 
+      relocate(Presence, probability)
+
+ggplot(binary_rb, aes(as_hms(new_date_time), Presence))+
+  geom_jitter(width = 0, height = 0.05)+
+  theme_minimal()
+```
+
+#### Song Sparrow
+
+```{r}
+binary_ss <- merged_df |> filter(date(date_time) == "2024-04-08") |>
+  mutate(new_date_time = date_time + seconds(start)) |> 
+  filter(between(new_date_time, interval_start, interval_end)) |>
+  filter(species == "Melospiza melodia_Song Sparrow") |> 
+  complete(new_date_time = seq(interval_start, interval_end, by = "1 sec"), 
+  fill = list(value = NA)) |> 
+    mutate(Presence = if_else(!is.na(probability),
+    true = 1,
+    false = 0)) |> 
+      relocate(Presence, probability)
+
+ggplot(binary_ss, aes(as_hms(new_date_time), Presence))+
+  geom_jitter(width = 0, height = 0.05)+
+  theme_minimal()
+```
+
+#### Brown Creeper
+
+```{r}
+binary_bc <- merged_df |> filter(date(date_time) == "2024-04-08") |>
+  mutate(new_date_time = date_time + seconds(start)) |> 
+  filter(between(new_date_time, interval_start, interval_end)) |>
+  filter(species == "Certhia americana_Brown Creeper") |> 
+  complete(new_date_time = seq(interval_start, interval_end, by = "1 sec"), 
+  fill = list(value = NA)) |> 
+    mutate(Presence = if_else(!is.na(probability),
+    true = 1,
+    false = 0)) |> 
+      relocate(Presence, probability)
+
+ggplot(binary_bc, aes(as_hms(new_date_time), Presence))+
+  geom_jitter(width = 0, height = 0.05)+
+  theme_minimal()
+```
+
+#### Robin
+
+```{r}
+binary_robin <- merged_df |> filter(date(date_time) == "2024-04-08") |>
+  mutate(new_date_time = date_time + seconds(start)) |> 
+  filter(between(new_date_time, interval_start, interval_end)) |>
+  filter(species == "Turdus migratorius_American Robin") |> 
+  complete(new_date_time = seq(interval_start, interval_end, by = "1 sec"), 
+  fill = list(value = NA)) |> 
+    mutate(Presence = if_else(!is.na(probability),
+    true = 1,
+    false = 0)) |> 
+      relocate(Presence, probability)
+
+ggplot(binary_robin, aes(as_hms(new_date_time), Presence))+
+  geom_jitter(width = 0, height = 0.05)+
+  theme_minimal()
+```
+
+#### Spring Peeper
+
+```{r}
+binary_sp <- merged_df |> filter(date(date_time) == "2024-04-08") |>
+  mutate(new_date_time = date_time + seconds(start)) |> 
+  filter(between(new_date_time, interval_start, interval_end)) |>
+  filter(species == "Pseudacris crucifer_Spring Peeper") |> 
+  complete(new_date_time = seq(interval_start, interval_end, by = "1 sec"), 
+  fill = list(value = NA)) |> 
+    mutate(Presence = if_else(!is.na(probability),
+    true = 1,
+    false = 0)) |> 
+      relocate(Presence, probability)
+
+ggplot(binary_sp, aes(as_hms(new_date_time), Presence))+
+  geom_jitter(width = 0, height = 0.05)+
+  theme_minimal()
 ```
 
 

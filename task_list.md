@@ -1,5 +1,16 @@
 # Task List
 
+## For February 5
+
+1. Faceting by audiomoth when you have enough data.
+
+2. Facet by surrounding days to see if you notice any patterns.
+
+3. Fix the 55 second issue. 
+
+4. Checking if some audiomoths are missing a species entirely across the four or five days that you are looking at.
+
+
 ## For January 29
 
 1. Exploratory Plots

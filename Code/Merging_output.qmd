@@ -463,4 +463,3 @@ ggplot(binary_sp, aes(as_hms(new_date_time), Presence))+
 
 
 
-

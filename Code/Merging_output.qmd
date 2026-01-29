@@ -333,15 +333,16 @@ interval_end <- ymd_hms("2024-04-08 15:55:30")
 binary_full <- merged_df |> filter(date(date_time) == "2024-04-08") |>
   mutate(new_date_time = date_time + seconds(start)) |> 
   filter(between(new_date_time, interval_start, interval_end)) |>
-  complete(new_date_time = seq(interval_start, interval_end, by = "1 sec"), 
+  complete(new_date_time = seq(interval_start, interval_end, by = "3 sec"), 
   fill = list(value = NA)) |> 
     mutate(Presence = if_else(!is.na(probability),
     true = 1,
     false = 0)) |> 
-      relocate(Presence, probability)
+      relocate(Presence, probability) # we need to remove 57 sec pt from every minute
 
 ggplot(binary_full, aes(as_hms(new_date_time), Presence))+
   geom_jitter(width = 0, height = 0.05)+
+  geom_smooth()+
   theme_minimal()
 ```
 
@@ -354,7 +355,7 @@ binary_grackle <- merged_df |> filter(date(date_time) == "2024-04-08") |>
   mutate(new_date_time = date_time + seconds(start)) |> 
   filter(between(new_date_time, interval_start, interval_end)) |>
   filter(species == "Quiscalus quiscula_Common Grackle") |> 
-  complete(new_date_time = seq(interval_start, interval_end, by = "1 sec"), 
+  complete(new_date_time = seq(interval_start, interval_end, by = "3 sec"), 
   fill = list(value = NA)) |> 
     mutate(Presence = if_else(!is.na(probability),
     true = 1,
@@ -363,6 +364,7 @@ binary_grackle <- merged_df |> filter(date(date_time) == "2024-04-08") |>
 
 ggplot(binary_grackle, aes(as_hms(new_date_time), Presence))+
   geom_jitter(width = 0, height = 0.05)+
+  geom_smooth()+
   theme_minimal()
 ```
 
@@ -373,7 +375,7 @@ binary_rb <- merged_df |> filter(date(date_time) == "2024-04-08") |>
   mutate(new_date_time = date_time + seconds(start)) |> 
   filter(between(new_date_time, interval_start, interval_end)) |>
   filter(species == "Euphagus carolinus_Rusty Blackbird") |> 
-  complete(new_date_time = seq(interval_start, interval_end, by = "1 sec"), 
+  complete(new_date_time = seq(interval_start, interval_end, by = "3 sec"), 
   fill = list(value = NA)) |> 
     mutate(Presence = if_else(!is.na(probability),
     true = 1,
@@ -392,7 +394,7 @@ binary_ss <- merged_df |> filter(date(date_time) == "2024-04-08") |>
   mutate(new_date_time = date_time + seconds(start)) |> 
   filter(between(new_date_time, interval_start, interval_end)) |>
   filter(species == "Melospiza melodia_Song Sparrow") |> 
-  complete(new_date_time = seq(interval_start, interval_end, by = "1 sec"), 
+  complete(new_date_time = seq(interval_start, interval_end, by = "3 sec"), 
   fill = list(value = NA)) |> 
     mutate(Presence = if_else(!is.na(probability),
     true = 1,
@@ -411,7 +413,7 @@ binary_bc <- merged_df |> filter(date(date_time) == "2024-04-08") |>
   mutate(new_date_time = date_time + seconds(start)) |> 
   filter(between(new_date_time, interval_start, interval_end)) |>
   filter(species == "Certhia americana_Brown Creeper") |> 
-  complete(new_date_time = seq(interval_start, interval_end, by = "1 sec"), 
+  complete(new_date_time = seq(interval_start, interval_end, by = "3 sec"), 
   fill = list(value = NA)) |> 
     mutate(Presence = if_else(!is.na(probability),
     true = 1,
@@ -430,7 +432,7 @@ binary_robin <- merged_df |> filter(date(date_time) == "2024-04-08") |>
   mutate(new_date_time = date_time + seconds(start)) |> 
   filter(between(new_date_time, interval_start, interval_end)) |>
   filter(species == "Turdus migratorius_American Robin") |> 
-  complete(new_date_time = seq(interval_start, interval_end, by = "1 sec"), 
+  complete(new_date_time = seq(interval_start, interval_end, by = "3 sec"), 
   fill = list(value = NA)) |> 
     mutate(Presence = if_else(!is.na(probability),
     true = 1,
@@ -449,7 +451,7 @@ binary_sp <- merged_df |> filter(date(date_time) == "2024-04-08") |>
   mutate(new_date_time = date_time + seconds(start)) |> 
   filter(between(new_date_time, interval_start, interval_end)) |>
   filter(species == "Pseudacris crucifer_Spring Peeper") |> 
-  complete(new_date_time = seq(interval_start, interval_end, by = "1 sec"), 
+  complete(new_date_time = seq(interval_start, interval_end, by = "3 sec"), 
   fill = list(value = NA)) |> 
     mutate(Presence = if_else(!is.na(probability),
     true = 1,
@@ -458,6 +460,7 @@ binary_sp <- merged_df |> filter(date(date_time) == "2024-04-08") |>
 
 ggplot(binary_sp, aes(as_hms(new_date_time), Presence))+
   geom_jitter(width = 0, height = 0.05)+
+  geom_smooth()+
   theme_minimal()
 ```
 

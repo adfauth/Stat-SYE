@@ -13,6 +13,7 @@ This file explores the birdnet output with the deployment data.
 rm(list = ls())
 library(tidyverse)
 library(here)
+library(hms)
 merged_df <- read_csv(here("Data/merged_output_deployment.csv"))
 glimpse(merged_df)
 ```
@@ -276,7 +277,9 @@ binary_full <- merged_df |> filter(date(date_time) == "2024-04-08") |>
     mutate(Presence = if_else(!is.na(probability),
     true = 1,
     false = 0)) |> 
-      relocate(Presence, probability) # we need to remove 57 sec pt from every minute
+      relocate(Presence, probability) |> 
+      filter(format(new_date_time, "%S") != "57") # we need to remove 57 sec pt from every minute
+
 
 ggplot(binary_full, aes(as_hms(new_date_time), Presence))+
   geom_jitter(width = 0, height = 0.05)+
@@ -401,4 +404,60 @@ ggplot(binary_sp, aes(as_hms(new_date_time), Presence))+
   geom_smooth()+
   theme_minimal()
 ```
+
+
+## 5 day span
+
+First, let's look at which species are the most common in the 5 surrounding days during the eclipse time:
+
+```{r}
+# 5 day span
+day1 <- ymd_hms("2024-04-06 00:00:00")
+day5 <- ymd_hms("2024-04-10 00:00:00")
+
+# eclipse time: 15:25:30
+interval_start <- ymd_hms("2024-04-08 14:55:30")
+interval_end <- ymd_hms("2024-04-08 15:55:30")
+
+five_day <- merged_df |> mutate(new_date_time = date_time + seconds(start)) |> 
+  filter(day1 <= new_date_time & new_date_time <= day5) |>
+  filter(between(new_date_time, interval_start, interval_end)) |>
+  complete(new_date_time = seq(interval_start, interval_end, by = "3 sec"), 
+  fill = list(value = NA)) |> 
+    mutate(Presence = if_else(!is.na(probability),
+    true = 1,
+    false = 0)) |> 
+      relocate(Presence, probability) |> 
+      filter(format(new_date_time, "%S") != "57")
+
+
+
+# find the top 10 most common species
+five_day |> group_by(species) |> 
+  summarise(count = n()) |> 
+  arrange(desc(count)) |> 
+  slice(1:10)
+```
+
+Some new characters! Let's take a look at some of them and check if they have any missing audiomoths
+
+#### Spring Peepers
+
+There are 20 AMs in total
+
+```{r}
+five_day |> filter(species == "Pseudacris crucifer_Spring Peeper") |> 
+  group_by(id) |> 
+  summarise(hits = n())
+```
+
+Missing 5!
+
+
+
+## Missing AMs
+
+Let's check which species are
+
+
 

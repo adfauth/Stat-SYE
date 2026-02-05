@@ -431,6 +431,7 @@ time_start, time_end)) |>
     true = 1,
     false = 0)) |> 
       relocate(Presence, probability) |> 
+      filter(seconds(time) != 57)
 
 
 # find the top 10 most common species
@@ -462,12 +463,12 @@ five_day |> filter(species %in% top_ten_5d$species) |>
 
 ```{r}
 sp_5d <- five_day |> filter(species == "Pseudacris crucifer_Spring Peeper") |>
-  complete(date_time = seq(interval_start, interval_end, by = "3 sec"), 
+  complete(time = as_hms(seq(as.numeric(time_start), as.numeric(time_end), by = 3)), 
   fill = list(value = NA)) |>
   mutate(Presence = if_else(!is.na(probability),
     true = 1,
     false = 0)) |> 
-  filter(format(date_time, "%S") != "57")
+  filter(seconds(time) != 57)
 
 ggplot(sp_5d, aes(date_time, Presence))+
   geom_jitter(width = 0, height = 0.05)+

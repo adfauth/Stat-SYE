@@ -1,5 +1,11 @@
 # Task List
 
+## For February 12
+
+1. Making a different complete data set (that completes by audiomoth).
+
+2. Finish making exploratory plots, dropping audiomoth sites that do not have a particular species (still do one for all species).
+
 ## For February 5
 
 1. Faceting by audiomoth when you have enough data.

@@ -18,6 +18,13 @@ merged_df <- read_csv(here("Data/merged_output_deployment.csv"))
 glimpse(merged_df)
 ```
 
+## Fixing datetime and time variable:
+
+```{r}
+merged_df <- merged_df |> mutate(date_time = date_time + seconds(start),
+time = as_hms(time + start))
+```
+
 ## Visualizations
 
 Let's see the most common species across the entire array of AMs.
@@ -269,19 +276,18 @@ Another thing to not is that there are no seconds in any of the time or date-tim
 interval_start <- ymd_hms("2024-04-08 14:55:30")
 interval_end <- ymd_hms("2024-04-08 15:55:30")
 
-binary_full <- merged_df |> filter(date(date_time) == "2024-04-08") |>
-  mutate(new_date_time = date_time + seconds(start)) |> 
-  filter(between(new_date_time, interval_start, interval_end)) |>
-  complete(new_date_time = seq(interval_start, interval_end, by = "3 sec"), 
+binary_full <- merged_df |> filter(date(date_time) == "2024-04-08") |> 
+  filter(between(date_time, interval_start, interval_end)) |>
+  complete(date_time = seq(interval_start, interval_end, by = "3 sec"), 
   fill = list(value = NA)) |> 
     mutate(Presence = if_else(!is.na(probability),
     true = 1,
     false = 0)) |> 
       relocate(Presence, probability) |> 
-      filter(format(new_date_time, "%S") != "57") # we need to remove 57 sec pt from every minute
+      filter(seconds(date_time) != 57)# we need to remove 57 sec pt from every minute
 
 
-ggplot(binary_full, aes(as_hms(new_date_time), Presence))+
+ggplot(binary_full, aes(as_hms(date_time), Presence))+
   geom_jitter(width = 0, height = 0.05)+
   geom_smooth()+
   theme_minimal()
@@ -293,17 +299,16 @@ Too hard to see. Let's look at some specific species:
 
 ```{r}
 binary_grackle <- merged_df |> filter(date(date_time) == "2024-04-08") |>
-  mutate(new_date_time = date_time + seconds(start)) |> 
-  filter(between(new_date_time, interval_start, interval_end)) |>
+  filter(between(date_time, interval_start, interval_end)) |>
   filter(species == "Quiscalus quiscula_Common Grackle") |> 
-  complete(new_date_time = seq(interval_start, interval_end, by = "3 sec"), 
+  complete(date_time = seq(interval_start, interval_end, by = "3 sec"), 
   fill = list(value = NA)) |> 
     mutate(Presence = if_else(!is.na(probability),
     true = 1,
     false = 0)) |> 
       relocate(Presence, probability)
 
-ggplot(binary_grackle, aes(as_hms(new_date_time), Presence))+
+ggplot(binary_grackle, aes(as_hms(date_time), Presence))+
   geom_jitter(width = 0, height = 0.05)+
   geom_smooth()+
   theme_minimal()
@@ -313,17 +318,16 @@ ggplot(binary_grackle, aes(as_hms(new_date_time), Presence))+
 
 ```{r}
 binary_rb <- merged_df |> filter(date(date_time) == "2024-04-08") |>
-  mutate(new_date_time = date_time + seconds(start)) |> 
-  filter(between(new_date_time, interval_start, interval_end)) |>
+  filter(between(date_time, interval_start, interval_end)) |>
   filter(species == "Euphagus carolinus_Rusty Blackbird") |> 
-  complete(new_date_time = seq(interval_start, interval_end, by = "3 sec"), 
+  complete(date_time = seq(interval_start, interval_end, by = "3 sec"), 
   fill = list(value = NA)) |> 
     mutate(Presence = if_else(!is.na(probability),
     true = 1,
     false = 0)) |> 
       relocate(Presence, probability)
 
-ggplot(binary_rb, aes(as_hms(new_date_time), Presence))+
+ggplot(binary_rb, aes(as_hms(date_time), Presence))+
   geom_jitter(width = 0, height = 0.05)+
   theme_minimal()
 ```
@@ -332,17 +336,16 @@ ggplot(binary_rb, aes(as_hms(new_date_time), Presence))+
 
 ```{r}
 binary_ss <- merged_df |> filter(date(date_time) == "2024-04-08") |>
-  mutate(new_date_time = date_time + seconds(start)) |> 
-  filter(between(new_date_time, interval_start, interval_end)) |>
+  filter(between(date_time, interval_start, interval_end)) |>
   filter(species == "Melospiza melodia_Song Sparrow") |> 
-  complete(new_date_time = seq(interval_start, interval_end, by = "3 sec"), 
+  complete(date_time = seq(interval_start, interval_end, by = "3 sec"), 
   fill = list(value = NA)) |> 
     mutate(Presence = if_else(!is.na(probability),
     true = 1,
     false = 0)) |> 
       relocate(Presence, probability)
 
-ggplot(binary_ss, aes(as_hms(new_date_time), Presence))+
+ggplot(binary_ss, aes(as_hms(date_time), Presence))+
   geom_jitter(width = 0, height = 0.05)+
   theme_minimal()
 ```
@@ -351,17 +354,16 @@ ggplot(binary_ss, aes(as_hms(new_date_time), Presence))+
 
 ```{r}
 binary_bc <- merged_df |> filter(date(date_time) == "2024-04-08") |>
-  mutate(new_date_time = date_time + seconds(start)) |> 
-  filter(between(new_date_time, interval_start, interval_end)) |>
+  filter(between(date_time, interval_start, interval_end)) |>
   filter(species == "Certhia americana_Brown Creeper") |> 
-  complete(new_date_time = seq(interval_start, interval_end, by = "3 sec"), 
+  complete(date_time = seq(interval_start, interval_end, by = "3 sec"), 
   fill = list(value = NA)) |> 
     mutate(Presence = if_else(!is.na(probability),
     true = 1,
     false = 0)) |> 
       relocate(Presence, probability)
 
-ggplot(binary_bc, aes(as_hms(new_date_time), Presence))+
+ggplot(binary_bc, aes(as_hms(date_time), Presence))+
   geom_jitter(width = 0, height = 0.05)+
   theme_minimal()
 ```
@@ -370,17 +372,16 @@ ggplot(binary_bc, aes(as_hms(new_date_time), Presence))+
 
 ```{r}
 binary_robin <- merged_df |> filter(date(date_time) == "2024-04-08") |>
-  mutate(new_date_time = date_time + seconds(start)) |> 
-  filter(between(new_date_time, interval_start, interval_end)) |>
+  filter(between(date_time, interval_start, interval_end)) |>
   filter(species == "Turdus migratorius_American Robin") |> 
-  complete(new_date_time = seq(interval_start, interval_end, by = "3 sec"), 
+  complete(date_time = seq(interval_start, interval_end, by = "3 sec"), 
   fill = list(value = NA)) |> 
     mutate(Presence = if_else(!is.na(probability),
     true = 1,
     false = 0)) |> 
       relocate(Presence, probability)
 
-ggplot(binary_robin, aes(as_hms(new_date_time), Presence))+
+ggplot(binary_robin, aes(as_hms(date_time), Presence))+
   geom_jitter(width = 0, height = 0.05)+
   theme_minimal()
 ```
@@ -389,17 +390,16 @@ ggplot(binary_robin, aes(as_hms(new_date_time), Presence))+
 
 ```{r}
 binary_sp <- merged_df |> filter(date(date_time) == "2024-04-08") |>
-  mutate(new_date_time = date_time + seconds(start)) |> 
-  filter(between(new_date_time, interval_start, interval_end)) |>
+  filter(between(date_time, interval_start, interval_end)) |>
   filter(species == "Pseudacris crucifer_Spring Peeper") |> 
-  complete(new_date_time = seq(interval_start, interval_end, by = "3 sec"), 
+  complete(date_time = seq(interval_start, interval_end, by = "3 sec"), 
   fill = list(value = NA)) |> 
     mutate(Presence = if_else(!is.na(probability),
     true = 1,
     false = 0)) |> 
       relocate(Presence, probability)
 
-ggplot(binary_sp, aes(as_hms(new_date_time), Presence))+
+ggplot(binary_sp, aes(as_hms(date_time), Presence))+
   geom_jitter(width = 0, height = 0.05)+
   geom_smooth()+
   theme_minimal()
@@ -413,51 +413,73 @@ First, let's look at which species are the most common in the 5 surrounding days
 ```{r}
 # 5 day span
 day1 <- ymd_hms("2024-04-06 00:00:00")
-day5 <- ymd_hms("2024-04-10 00:00:00")
+day5 <- ymd_hms("2024-04-10 23:59:59")
 
 # eclipse time: 15:25:30
-interval_start <- ymd_hms("2024-04-08 14:55:30")
-interval_end <- ymd_hms("2024-04-08 15:55:30")
+time_start <- as_hms("14:55:30")
+time_end <- as_hms("15:55:30")
 
-five_day <- merged_df |> mutate(new_date_time = date_time + seconds(start)) |> 
-  filter(day1 <= new_date_time & new_date_time <= day5) |>
-  filter(between(new_date_time, interval_start, interval_end)) |>
-  complete(new_date_time = seq(interval_start, interval_end, by = "3 sec"), 
+five_day <- merged_df |> filter(between(time, 
+time_start, time_end)) |>
+  filter(day1 <= date_time & date_time <= day5) |>
+  mutate(date = as_date(date_time)) |> 
+  group_by(date) |> 
+  complete(time = as_hms(seq(as.numeric(time_start), as.numeric(time_end), by = 3)), 
   fill = list(value = NA)) |> 
+    ungroup() |> 
     mutate(Presence = if_else(!is.na(probability),
     true = 1,
     false = 0)) |> 
       relocate(Presence, probability) |> 
-      filter(format(new_date_time, "%S") != "57")
-
 
 
 # find the top 10 most common species
-five_day |> group_by(species) |> 
+top_ten_5d <- five_day |> filter(!is.na(probability)) |> 
+  group_by(species) |> 
   summarise(count = n()) |> 
   arrange(desc(count)) |> 
   slice(1:10)
+top_ten_5d
 ```
 
 Some new characters! Let's take a look at some of them and check if they have any missing audiomoths
 
-#### Spring Peepers
+## Missing AMs
 
 There are 20 AMs in total
 
+Let's look at the 10 ten species and see how many AMs are missing within the five days.
+
 ```{r}
-five_day |> filter(species == "Pseudacris crucifer_Spring Peeper") |> 
-  group_by(id) |> 
-  summarise(hits = n())
+five_day |> filter(species %in% top_ten_5d$species) |> 
+  group_by(species) |>  
+  summarise(missingAMs = 20 - n_distinct(id))
 ```
 
-Missing 5!
+## Facet by surrounging days:
+
+#### Spring Peeper
+
+```{r}
+sp_5d <- five_day |> filter(species == "Pseudacris crucifer_Spring Peeper") |>
+  complete(date_time = seq(interval_start, interval_end, by = "3 sec"), 
+  fill = list(value = NA)) |>
+  mutate(Presence = if_else(!is.na(probability),
+    true = 1,
+    false = 0)) |> 
+  filter(format(date_time, "%S") != "57")
+
+ggplot(sp_5d, aes(date_time, Presence))+
+  geom_jitter(width = 0, height = 0.05)+
+  geom_smooth()+
+  facet_wrap(~day(date_time))+
+  scale_x_datetime()+
+  theme_minimal()
+```
 
 
 
-## Missing AMs
 
-Let's check which species are
 
 
 

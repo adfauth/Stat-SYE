@@ -1,5 +1,11 @@
 # Task List
 
+## For February 26
+
+1. Work on introduction and data collection.
+
+2. Work on exploratory data section with introducing plots.
+
 ## For February 12
 
 1. Making a different complete data set (that completes by audiomoth).

@@ -423,7 +423,7 @@ five_day <- merged_df |> filter(between(time,
 time_start, time_end)) |>
   filter(day1 <= date_time & date_time <= day5) |>
   mutate(date = as_date(date_time)) |> 
-  group_by(date) |> 
+  group_by(date, id) |> # want to complete the gaps for each site/AM
   complete(time = as_hms(seq(as.numeric(time_start), as.numeric(time_end), by = 3)), 
   fill = list(value = NA)) |> 
     ungroup() |> 
@@ -459,10 +459,22 @@ five_day |> filter(species %in% top_ten_5d$species) |>
 
 ## Facet by surrounging days:
 
+Let's make some plots of the surrounding days starting with all species, and then filtering to each of the native species in the 'top ten list.'
+
+```{r}
+ggplot(five_day, aes(time, Presence))+
+  geom_jitter(width = 0, height = 0.05)+
+  geom_smooth(se = F)+
+  facet_wrap(~day(date))+
+  scale_x_time()+
+  theme_minimal()
+```
+
 #### Spring Peeper
 
 ```{r}
 sp_5d <- five_day |> filter(species == "Pseudacris crucifer_Spring Peeper") |>
+  group_by(date, id) |> 
   complete(time = as_hms(seq(as.numeric(time_start), as.numeric(time_end), by = 3)), 
   fill = list(value = NA)) |>
   mutate(Presence = if_else(!is.na(probability),
@@ -470,17 +482,146 @@ sp_5d <- five_day |> filter(species == "Pseudacris crucifer_Spring Peeper") |>
     false = 0)) |> 
   filter(seconds(time) != 57)
 
-ggplot(sp_5d, aes(date_time, Presence))+
+ggplot(sp_5d, aes(time, Presence))+
   geom_jitter(width = 0, height = 0.05)+
-  geom_smooth()+
-  facet_wrap(~day(date_time))+
-  scale_x_datetime()+
+  geom_smooth(se = F)+
+  facet_wrap(~day(date))+
+  scale_x_time()+
   theme_minimal()
+
+# check which audiomoths had hits:
+sp_5d |> group_by(id) |> 
+  summarise(total_hits = sum(Presence))
 ```
 
+Looks like we have increase activity around totality!
 
+#### Wood Frog
 
+```{r}
+wf_5d <- five_day |> filter(species == "Lithobates sylvaticus_Wood Frog") |>
+  group_by(date, id) |> 
+  complete(time = as_hms(seq(as.numeric(time_start), as.numeric(time_end), by = 3)), 
+  fill = list(value = NA)) |>
+  mutate(Presence = if_else(!is.na(probability),
+    true = 1,
+    false = 0)) |> 
+  filter(seconds(time) != 57)
 
+ggplot(wf_5d, aes(time, Presence))+
+  geom_jitter(width = 0, height = 0.05)+
+  geom_smooth(se = F)+
+  facet_wrap(~day(date))+
+  scale_x_time()+
+  theme_minimal()
 
+# check which audiomoths had hits:
+wf_5d |> group_by(id) |> 
+  summarise(total_hits = sum(Presence))
+```
 
+No ids on the 6th (within the time interval). Hard to see a pattern due to the eclipse (possibly a drop in activity?)
 
+#### Canada Goose
+
+```{r}
+cgo_5d <- five_day |> filter(species == "Branta canadensis_Canada Goose") |>
+  group_by(date, id) |> 
+  complete(time = as_hms(seq(as.numeric(time_start), as.numeric(time_end), by = 3)), 
+  fill = list(value = NA)) |>
+  mutate(Presence = if_else(!is.na(probability),
+    true = 1,
+    false = 0)) |> 
+  filter(seconds(time) != 57)
+
+ggplot(cgo_5d, aes(time, Presence))+
+  geom_jitter(width = 0, height = 0.05)+
+  geom_smooth(se = F)+
+  facet_wrap(~day(date))+
+  scale_x_time()+
+  theme_minimal()
+
+# check which audiomoths had hits:
+cgo_5d |> group_by(id) |> 
+  summarise(total_hits = sum(Presence))
+```
+
+Seems like there is a gap in activity around totality that is not present in the other days.
+
+#### Pickerel Frog
+
+```{r}
+pf_5d <- five_day |> filter(species == "Lithobates palustris_Pickerel Frog") |>
+  group_by(date, id) |> 
+  complete(time = as_hms(seq(as.numeric(time_start), as.numeric(time_end), by = 3)), 
+  fill = list(value = NA)) |>
+  mutate(Presence = if_else(!is.na(probability),
+    true = 1,
+    false = 0)) |> 
+  filter(seconds(time) != 57)
+
+ggplot(pf_5d, aes(time, Presence))+
+  geom_jitter(width = 0, height = 0.05)+
+  geom_smooth(se = F)+
+  facet_wrap(~day(date))+
+  scale_x_time()+
+  theme_minimal()
+
+# check which audiomoths had hits:
+cgo_5d |> group_by(id) |> 
+  summarise(total_hits = sum(Presence))
+```
+
+No ids on the 6th (within the time interval). Maybe a little increase in activity around totality but looks minimal.
+
+#### Chickadee
+
+```{r}
+bcc_5d <- five_day |> filter(species == "Poecile atricapillus_Black-capped Chickadee") |>
+  group_by(date, id) |> 
+  complete(time = as_hms(seq(as.numeric(time_start), as.numeric(time_end), by = 3)), 
+  fill = list(value = NA)) |>
+  mutate(Presence = if_else(!is.na(probability),
+    true = 1,
+    false = 0)) |> 
+  filter(seconds(time) != 57)
+
+ggplot(bcc_5d, aes(time, Presence))+
+  geom_jitter(width = 0, height = 0.05)+
+  geom_smooth(se = F)+
+  facet_wrap(~day(date))+
+  scale_x_time()+
+  theme_minimal()
+
+# check which audiomoths had hits:
+bcc_5d |> group_by(id) |> 
+  summarise(total_hits = sum(Presence))
+```
+
+Data is pretty sparse on the 7th and 8th -- probably a difficult species to analyze for these dates within the time interval.
+
+#### Common Grackle
+
+```{r}
+cgr_5d <- five_day |> filter(species == "Quiscalus quiscula_Common Grackle") |>
+  group_by(date, id) |> 
+  complete(time = as_hms(seq(as.numeric(time_start), as.numeric(time_end), by = 3)), 
+  fill = list(value = NA)) |>
+  mutate(Presence = if_else(!is.na(probability),
+    true = 1,
+    false = 0)) |> 
+  filter(seconds(time) != 57)
+
+ggplot(cgr_5d, aes(time, Presence))+
+  geom_jitter(width = 0, height = 0.05)+
+  geom_smooth(se = F)+
+  facet_wrap(~day(date))+
+  scale_x_time()+
+  theme_minimal()
+
+# check which audiomoths had hits:
+cgr_5d |> group_by(id) |> 
+  summarise(total_hits = sum(Presence))
+```
+
+Data pretty sparse for the time interval on the 6th. There seems to be a gap around totality on the 8th, which is not present for the other days.

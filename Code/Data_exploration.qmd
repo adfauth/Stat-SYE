@@ -625,3 +625,54 @@ cgr_5d |> group_by(id) |>
 ```
 
 Data pretty sparse for the time interval on the 6th. There seems to be a gap around totality on the 8th, which is not present for the other days.
+
+
+Palmeria dolei_Akohekohe:
+
+```{r}
+a_5d <- five_day |> filter(species == "Palmeria dolei_Akohekohe") |>
+  group_by(date, id) |> 
+  complete(time = as_hms(seq(as.numeric(time_start), as.numeric(time_end), by = 3)), 
+  fill = list(value = NA)) |>
+  mutate(Presence = if_else(!is.na(probability),
+    true = 1,
+    false = 0)) |> 
+  filter(seconds(time) != 57)
+
+ggplot(a_5d, aes(time, Presence))+
+  geom_jitter(width = 0, height = 0.05)+
+  geom_smooth(se = F)+
+  facet_wrap(~day(date))+
+  scale_x_time()+
+  theme_minimal()
+
+# check which audiomoths had hits:
+a_5d |> group_by(id) |> 
+  summarise(total_hits = sum(Presence))
+```
+
+Porzana porzana_Spotted Crake
+
+```{r}
+sc_5d <- five_day |> filter(species == "Porzana porzana_Spotted Crake") |>
+  group_by(date, id) |> 
+  complete(time = as_hms(seq(as.numeric(time_start), as.numeric(time_end), by = 3)), 
+  fill = list(value = NA)) |>
+  mutate(Presence = if_else(!is.na(probability),
+    true = 1,
+    false = 0)) |> 
+  filter(seconds(time) != 57)
+
+ggplot(sc_5d, aes(time, Presence))+
+  geom_jitter(width = 0, height = 0.05)+
+  geom_smooth(se = F)+
+  facet_wrap(~day(date))+
+  scale_x_time()+
+  theme_minimal()
+
+# check which audiomoths had hits:
+sc_5d |> group_by(id) |> 
+  summarise(total_hits = sum(Presence))
+```
+
+

@@ -1,5 +1,12 @@
 # Task List
 
+## For March 3
+
+1. Work on introduction and data collection.
+
+2. Work on exploratory data section with introducing plots.
+
+
 ## For February 26
 
 1. Work on introduction and data collection.

@@ -1,6 +1,16 @@
 # Task List
 
-## For March 3
+## March 12
+
+1. Check five of the files for two of the non-native species.
+
+2. Make the basic exploratory graphs and plots.
+
+3. Add a geom_rect shaded area during time of totality of the eclipse.
+
+4. Cite paper and see what they found!
+
+## For March 5
 
 1. Work on introduction and data collection.
 

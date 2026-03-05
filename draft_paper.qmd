@@ -4,7 +4,7 @@ execute:
   echo: false
   warning: false
 format: 
-   html:
+   docx:
     embed-resources: true
 ---
 
@@ -17,17 +17,28 @@ merged_df <- read_csv(here("Data/merged_output_deployment.csv"))
 
 ## Introduction
 
-Solar eclipses a rare natural experiment to study changes in animal activity patterns and behaviors in the natural environment. Light dictates many animals circadian rhythm and activity pattern; changes in light levels act as a trigger for a change in behavior such as vocalizing, resting, or foraging. While athroprogenic light pollution at night has been studied and there is research in controlled settings (source) little experimentation has been done on lack of light in natural settings. Previous studies of solar eclipses document a change in vocalization patterns and see a change in the overall 'biophony.' However, there is limited investigation into the species-specific responses to the eclipse and how that contributes to the change in the overall soundcapse. In this study we investigate species-specific changes in vocalization activity through the use of passive acoustic monitoring, AI species identification, and bioacoustic modeling.
+Solar eclipses are a rare natural experiment to study changes in animal activity patterns and behaviors. Light dictates many animals circadian rhythm and activity pattern; changes in light levels act as a trigger for behaviors such as vocalizing, resting, or foraging. While athroprogenic light pollution at night has been studied and there is research in controlled settings (source) little experimentation has been done on lack of light in natural settings. Previous studies of solar eclipses document a change in vocalization patterns and see a change in the overall 'biophony.' However, there is limited investigation into the species-specific responses to the eclipse and how that contributes to the change in the overall soundscape. In this study we investigate species-specific changes in vocalization activity through the use of passive acoustic monitoring, AI species identification, and bioacoustic modeling.
 
-Passive acoustic monitoring is an effect method for investigating activity changes through recordings of vocalizations (source). Passive acoustic monitoring is a non-invasive field method in which researchers can identify (auditory) species without disturbing the environment. While an advantage of recorders is that reduce time spent in the field, they have some inherent challenges: (1) the time spent by experts listening the audio recordings and (2) the large volume of data (audio files) produced by autonomous recording. The development of deep learning algorithms that identify species from the audio files, addresses one of the challenges of bioacoustic analysis and makes passive acoustice monitoring a more feasible data collection method. One species identification algorithm is BirdNET, developed by Cornell Lab of Ornithology (source), which breaks audio files into three-second clips to identify a species and provides a 'probability' of its confidence in the prediction. While the use of algorthims like BirdNET drastically reduces the time spent by experts listening to audio, it still does not address the challenge of dealing with the large volume of data, along with introducing new challenges like computing power and how to interpret these confidence scores to extract meaningful insight. Our work attempts to address some of the inherent challenges in using BirdNET for bioacoustic analysis and effectively model a to address a real-world question: what were the species-level response to the 2024 total eclipse? We develop workflow for running BirdNET on a high-performace computing (HPC) cluster and manipulating the output for modeling.
+Passive acoustic monitoring is an effective method for investigating activity changes through recordings of vocalizations (source). Passive acoustic monitoring is a non-invasive field method in which researchers can identify (auditory) species without disturbing the environment. While an advantage of recorders is that reduce time spent in the field, they have some inherent challenges: (1) the time spent by experts listening the audio recordings and (2) the large volume of data (audio files) produced by autonomous recording. The development of deep learning algorithms that identify species from the audio files, addresses one of the challenges of bioacoustic analysis and makes passive acoustice monitoring a more feasible data collection method. One species identification algorithm is BirdNET, developed by Cornell Lab of Ornithology (source), which breaks audio files into three-second clips to identify a species and provides a 'probability' of its confidence in the prediction. While the use of algorthims like BirdNET drastically reduces the time spent by experts listening to audio, it still does not address the challenge of dealing with the large volume of data, along with introducing new challenges like computing power and how to interpret these confidence scores to extract meaningful insight. Our work attempts to address some of the inherent challenges in using BirdNET for bioacoustic analysis and effectively model a to address a real-world question: what were the species-level response to the 2024 total eclipse? We develop workflow for running BirdNET on a high-performace computing (HPC) cluster and manipulating the output for modeling.
 
-The study area included natural areas around Canton, NY (list them here) where 20 acoustic recorders (AudioMoths; give citation) divided amongst the sites to randomly selected locations (ask Erika/Matt for the specific deployment information). The recording spanned from March 30, 2024 to April 16, 2024 -- several days on either side of the eclipse, which occurred on April 8th with totality in Canton, NY occurring at 3:23:52 PM EDT. (IDK if I should include the recording schedule or not)
+The study area included natural areas around Canton, NY: St. Lawrence University Kip Trail in Canton, Donnerville State Forest in Russell, and Upper and Lower Lake Wildlife Management Area in Rensselaer Falls (Fig 1A). Divided among these sites, we selected 20 acoustic recorder deployment locations (Fig 1B). The recording spanned from March 30, 2024 to April 16, 2024 -- several days on either side of the eclipse, which occurred on April 8th, 2024. On eclipse day, the partial eclipse began at 14:11:38, totality began at 15:23:52, maximum eclipse was at 15:25:29, totality ended at 15:27:05 and the partial eclipse ended at 16:35:38 (all times local, times from https://www.timeanddate.com/eclipse/in/@5111484?iso=20240408). All deployments were within the path of the eclipse and were in a forest-wetland interface or forested wetlands to capture both bird and breeding amphibian audio (along with any active insects and anthrophonic noise).
 
-*Note:* Add AM schedule and deployment info here and we will add the deployment map as well.
+::: {#fig-two-images layout-ncol=2}
+![](/eclipse_map_red.jpg){#A}
 
-After data collection, the raw audio files were transfered to 
+![](/zoomed_audiomoths.png){#B}
+
+Figure 1. (A) Map of AudioMoth deployments around Canton, NY. Subpanel depicts the eclipse path through norther NY. (B) One panel containing the entire deployment map with zoomed in view of each deployment location: St. Lawrence University (Canton, NY), Donnerville State Forest (Russell, NY), and Upper and Lower Lake WMA (Renselear Falls, NY). 
+:::
+
+We used AudioMoth recorders (source), which are inexpensive, open source, and configurable (probably include the full config file as a supplemental material). The recording occurred in four sections of the day. The first section was from 05:45 – 07:15 (approximately 30 minutes before to 45 minutes after sunrise), the second from 14:00 to 16:50 (capturing the full period of time each day corresponding to the eclipse on April 8),  third from 19:00 to 20:00 (approximately 30 minutes before and after sunset) and the last from 23:00 to 23:30 (to sample nocturnal sounds). Within each recording window, the AudioMoths actively recorded for 55 seconds and 'rested' (did no record) for 5 seconds and saved this 1 minute cycle as an individual audio file on the SD card.
+
+
+
+After data collection, we transfered the  
 
 *Note:* in this section talk quickly about workflow and output. Also species list
+
 
 
 

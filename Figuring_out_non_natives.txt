@@ -1,0 +1,46 @@
+This file includes the notes taken while listening to some audio files where a species not present in St. Lawrence county was identified. We picked two of the most common mis-identifications in the data set and I made notes about whether ANY birds where calling during the clip where a erroneous species was identified by BirdNET.
+
+
+Caprimulgus europaeus_Eurasian Nightjar:
+
+
+A021_SD023, 20240406_151900
+seconds: 48 - 51
+
+Notes:
+   
+A021_SD023, 20240407_140000
+seconds: 51 - 54
+    
+A018_SD011, 20240401_070800
+seconds: 9 - 12
+    
+A018_SD011, 20240407_142600
+seconds: 24 - 27
+
+A022_SD019, 20240331_143000
+seconds: 27 - 30
+
+
+
+Palmeria dolei_Akohekohe:
+
+A003_SD005, 20240402_071000.WAV     
+seconds: 0 - 3
+
+
+A009_SD009, 20240331_141700.WAV    
+seconds: 24 - 27
+
+
+A010_SD014, 20240331_060900.WAV
+seconds: 0 - 3
+
+
+A011_SD018, 20240331_190400.WAV
+seconds: 15 - 18
+
+
+A013_SD016, 20240330_162200.WAV    
+seconds: 33 - 36
+

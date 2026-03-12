@@ -41,11 +41,44 @@ After data collection, we transfered the audio files onto a HPC. We used a Pytho
 
 *Note: all of this exploration is with the un-filtered data. For any graphs using the entire data set, those include misidentifications. Without really knowing whether these identifications are of mis-identified native species or abiotic sounds, we don't know how this is effecting the vizualizations* LOOK AT SOME MORE AUDIO
 
-*Question: Should we start with some simple descriptive statistics for the entire data set here or at the beginning of the results? Like which sites had the most species/hits, which days had the most species/hits, which species were most common, etc.* YES
+```{r}
+basic_stats <- merged_df |> summarise(duration = max(date(date_time)) - min(date(date_time)),
+count = n(),
+sr = n_distinct(species))
+```
 
-*Thought: I actually think we can start with 'MH graph' even though we did a lot of work with the probability plots in the beginning. It was only after 'MH graph' that we realized what temporal scale around the eclipse we wanted.* YES
+Using R we started exploring the data. We recorded for `{r} basic_stats$duration` resulting in `{r} basic_stats$count` total detections and `{r} basic_stats$sr` total species. Figure 2 depicts the top ten most common species, the most common being Spring Peepers (*Pseudacris crucifer*) with `{r} common_species$species[1]` total detections. Table 2 shows the sites with the most detections and species -- a site in Donnerville State Forest had the most detections with `{r} site_stats$count[1]`, but the site with the highest species richness was on St. Lawrence University campus with `{r} max(site_stats$species_richness)` species identified.
 
-Using R we started exploring the data. We started investigating which temporal scale is useful in comparing the eclipse to the surrounding days. We manipulated the data to look at intervals around the time of totality (15:25:30) for each day sampled to see what resolution best represented the differences in species identifications during the eclipse. Fig 2 shows much more new hits on the eclipse day compared to other days during intervals extending to around 30 mins on either side of the time of totality. At intervals of more than ± 30 mins, the number of identifications looks similar to the other days.
+```{r}
+# NOTE: we still have erroneous species!
+# figure 2:
+common_species <- merged_df |> group_by(species) |> 
+  summarise(count = n()) |> 
+  ungroup() |> 
+  arrange(desc(count)) |> 
+  slice(1:10) |> 
+  mutate(species = fct_reorder(species, count))
+
+ggplot(common_species, aes(x = species, y = count))+
+  geom_col(fill = "black")+
+  coord_flip()+
+  theme_minimal()
+
+```
+
+```{r}
+# table 2:
+site_stats <- merged_df |> group_by(deployment_num) |> 
+  summarise(count = n(),
+  species_richness = n_distinct(species)) |> 
+    ungroup() |> 
+    arrange(desc(count)) |> 
+    slice(1:10)
+
+site_stats |> pander()
+```
+
+To frame our analysis, we started investigating which temporal scale is useful in comparing the eclipse to the surrounding days. We manipulated the data to look at intervals around the time of totality (15:25:30) for each day sampled to see what resolution best represented the differences in species identifications during the eclipse. Fig 2 shows much more new hits on the eclipse day compared to other days during intervals extending to around 30 mins on either side of the time of totality. At intervals of more than ± 30 mins, the number of identifications looks similar to the other days.
 
 ```{r}
 days <- c(1:15)

@@ -7,40 +7,78 @@ Caprimulgus europaeus_Eurasian Nightjar:
 A021_SD023, 20240406_151900
 seconds: 48 - 51
 
-Notes:
+Notes:  
+ - Wind
+ - running water 
+ - some weird bumping sounds that are hard to distinguish
+ - Not a single bird at that clip
    
 A021_SD023, 20240407_140000
 seconds: 51 - 54
+
+Notes:
+ - Running water
+ - weird bumping
+ - wind
+ - maybe a woodpecker in the distance
     
 A018_SD011, 20240401_070800
 seconds: 9 - 12
+
+Notes:
+ - Definitely birds chirping
     
 A018_SD011, 20240407_142600
 seconds: 24 - 27
 
+Notes:
+ - Same weird bumping sound
+ - stuff is calling though
+
 A022_SD019, 20240331_143000
 seconds: 27 - 30
 
+Notes:
+ - Really load buming/knocking
+ - wind
 
+---------------------------------------------
 
 Palmeria dolei_Akohekohe:
 
 A003_SD005, 20240402_071000.WAV     
 seconds: 0 - 3
 
+Notes:
+ - Water?
+ - birds call after the first 3 secs but not during
 
 A009_SD009, 20240331_141700.WAV    
 seconds: 24 - 27
 
+Notes:
+ - Engine
+ - One bird chirping
+ - wind
 
 A010_SD014, 20240331_060900.WAV
 seconds: 0 - 3
 
+Notes:
+ - One chirp
+ - running water
 
 A011_SD018, 20240331_190400.WAV
 seconds: 15 - 18
 
+Notes:
+ - running water
+ - creaking (tree? or animal?)
 
 A013_SD016, 20240330_162200.WAV    
 seconds: 33 - 36
+
+Notes:
+ - Bird calling maybe right at beginning (but might be before clip starts)
+ - running water
 

@@ -1,10 +1,18 @@
 # Task List
 
-## April 2
+## For April 9
+
+1. Write abstract and title (bring to next week's meeting).
+
+2. Start a rough draft of the poster (up to a section on modeling).
+
+3. Revise model based on feedback.
+
+## For April 2
 
 1. Modeling!
 
-## March 12
+## For March 12
 
 1. Check five of the files for two of the non-native species.
 

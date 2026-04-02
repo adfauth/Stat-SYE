@@ -133,3 +133,5 @@ all_sites_mod <- gamm(Presence ~ s(time_num) + s(deployment_num, bs = "re"),
 summary(all_sites_mod$gam)
 plot(all_sites_mod$gam)
 ```
+
+This needs work... something is not working right

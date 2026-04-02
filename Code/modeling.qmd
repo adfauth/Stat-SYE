@@ -58,8 +58,12 @@ Looks good! Now we can move on to modelling!
 ### Autocorrelation
 
 ```{r}
-
+ts_AM0011 <- ts(AM0011_all_sp$Presence, start = 53730, end = 57330, deltat = 3)
+Acf(ts_AM0011)
+Pacf(ts_AM0011)
 ```
+
+Definitely need at least on AR term.
 
 ### Model
 
@@ -75,3 +79,57 @@ summary(AM0011_mod$gam)
 plot(AM0011_mod$gam)
 ```
 
+#### Autocorrelation of resids
+
+```{r}
+resids_AM0011 <- residuals(AM0011_mod$lme)
+Acf(resids_AM0011)
+```
+
+
+## All AMs on Eclipse Day
+
+Next we will use the same model to look at all species from all the sites, but still only on eclipse day.
+
+### Filter DF
+
+```{r}
+# eclipse time: 15:25:30
+time_start <- as_hms("14:55:30")
+time_end <- as_hms("15:55:30")
+
+all_sites <- merged_df |> filter(as_date(date_time) == "2024-04-08") |> 
+    filter(between(time, time_start, time_end)) |>
+    group_by(id) |> # want to complete the gaps for each site/AM
+    complete(time = as_hms(seq(as.numeric(time_start), as.numeric(time_end), by = 3)), 
+    fill = list(value = NA)) |> 
+    ungroup() |> 
+    mutate(Presence = if_else(!is.na(probability),
+    true = 1,
+    false = 0)) |> 
+      relocate(Presence, probability) |> 
+      filter(seconds(time) != 57)
+```
+
+### Model
+
+```{r}
+# 1. Ensure site is a factor and data is sorted
+all_sites$deployment_num <- as.factor(all_sites$deployment_num)
+
+# 2. Create the within-site observation order to avoid duplicate timestamp errors
+all_sites <- all_sites |> 
+  group_by(deployment_num) |> 
+  mutate(obs_order = row_number()) |> 
+  ungroup()
+
+all_sites$time_num <- as.numeric(all_sites$time)
+
+# 3. Fit the model
+all_sites_mod <- gamm(Presence ~ s(time_num) + s(deployment_num, bs = "re"), 
+                   family = binomial,
+                   data = all_sites,
+                   correlation = corAR1(form = ~ obs_order | deployment_num))
+summary(all_sites_mod$gam)
+plot(all_sites_mod$gam)
+```

@@ -68,13 +68,13 @@ Definitely need at least on AR term.
 ### Model
 
 ```{r}
+# some timestamps have multiple species (need to get rid of duplicates)
+AM0011_all_sp <- AM0011_all_sp |> distinct(time, .keep_all = TRUE)
+
 # need time variable to be numeric:
 AM0011_all_sp$time_num <- as.numeric(AM0011_all_sp$time)
 
-# for AR term AI said I needed a counter for the few rows that had multiple species:
-AM0011_all_sp$obs_order <- 1:nrow(AM0011_all_sp)
-
-AM0011_mod <- gamm(Presence ~ s(time_num), data = AM0011_all_sp, family = binomial, correlation = corAR1(form = ~ obs_order | time_num))
+AM0011_mod <- gamm(Presence ~ s(time_num), data = AM0011_all_sp, family = binomial, correlation = corAR1(form = ~ time_num))
 summary(AM0011_mod$gam)
 plot(AM0011_mod$gam)
 ```
@@ -100,7 +100,7 @@ time_end <- as_hms("15:55:30")
 
 all_sites <- merged_df |> filter(as_date(date_time) == "2024-04-08") |> 
     filter(between(time, time_start, time_end)) |>
-    group_by(id) |> # want to complete the gaps for each site/AM
+    group_by(deployment_num) |> # want to complete the gaps for each site/AM
     complete(time = as_hms(seq(as.numeric(time_start), as.numeric(time_end), by = 3)), 
     fill = list(value = NA)) |> 
     ungroup() |> 
@@ -108,7 +108,8 @@ all_sites <- merged_df |> filter(as_date(date_time) == "2024-04-08") |>
     true = 1,
     false = 0)) |> 
       relocate(Presence, probability) |> 
-      filter(seconds(time) != 57)
+      filter(seconds(time) != 57) |> 
+    distinct(time, .keep_all = TRUE) # get rid of any species at the same timestamp
 ```
 
 ### Model
@@ -126,7 +127,7 @@ all_sites <- all_sites |>
 all_sites$time_num <- as.numeric(all_sites$time)
 
 # 3. Fit the model
-all_sites_mod <- gamm(Presence ~ s(time_num) + s(deployment_num, bs = "re"), 
+all_sites_mod <- gamm(Presence ~ s(time_num) + s(deployment_num, bs = "re"), # re or sz?s
                    family = binomial,
                    data = all_sites,
                    correlation = corAR1(form = ~ obs_order | deployment_num))
@@ -134,4 +135,4 @@ summary(all_sites_mod$gam)
 plot(all_sites_mod$gam)
 ```
 
-This needs work... something is not working right
+Both models seem to be working?

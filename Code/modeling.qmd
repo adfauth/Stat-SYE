@@ -1,0 +1,77 @@
+---
+title: "Modeling"
+format: html
+---
+
+## Set up
+
+```{r}
+#| warning: false
+#| output: false
+rm(list = ls())
+library(tidyverse)
+library(here)
+library(nlme)
+library(mgcv)
+library(forecast)
+library(hms) 
+merged_df <- read_csv(here("Data/merged_output_deployment.csv"))
+```
+
+#### Fix datetime variable
+
+```{r}
+merged_df <- merged_df |> 
+    mutate(date_time = date_time + seconds(start),
+    time = as_hms(time + start))
+```
+
+## Single AM on Eclipse Day
+
+Here we will do a simplified model where we will only look at one site on eclipse day but look at all species.
+
+First we need to filter the data frame and fill in the gaps in time where there were no species calling.
+
+#### Filtering Data Frame 
+
+We will use deployment AM0011
+
+```{r}
+# eclipse time: 15:25:30
+time_start <- as_hms("14:55:30")
+time_end <- as_hms("15:55:30")
+
+AM0011_all_sp <- merged_df |> filter(as_date(date_time) == "2024-04-08" & deployment_num == "AM0011") |>   
+    filter(between(time, time_start, time_end)) |>
+  complete(time = as_hms(seq(as.numeric(time_start), as.numeric(time_end), by = 3)), 
+  fill = list(value = NA)) |> 
+    ungroup() |> 
+    mutate(Presence = if_else(!is.na(probability),
+    true = 1,
+    false = 0)) |> 
+      relocate(Presence, probability) |> 
+      filter(seconds(time) != 57)
+```
+
+Looks good! Now we can move on to modelling!
+
+### Autocorrelation
+
+```{r}
+
+```
+
+### Model
+
+```{r}
+# need time variable to be numeric:
+AM0011_all_sp$time_num <- as.numeric(AM0011_all_sp$time)
+
+# for AR term AI said I needed a counter for the few rows that had multiple species:
+AM0011_all_sp$obs_order <- 1:nrow(AM0011_all_sp)
+
+AM0011_mod <- gamm(Presence ~ s(time_num), data = AM0011_all_sp, family = binomial, correlation = corAR1(form = ~ obs_order | time_num))
+summary(AM0011_mod$gam)
+plot(AM0011_mod$gam)
+```
+

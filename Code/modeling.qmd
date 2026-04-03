@@ -136,3 +136,29 @@ plot(all_sites_mod$gam)
 ```
 
 Both models seem to be working?
+
+Thanks Aidan! It does look like the model is giving reasonable results, so this is great! A few thoughts and things to update:
+
+- If you look at the plot of the predicted probabilities below, you'll notice that the model is using the same smoother for each audiomoth. To allow for different smoothers for different audiomoths (and eventually, different days), there is a `by` argument to `s()`: `s(time_num, by = deployment_num)`, which says to fit a different smoother for `time_num` for each deployment number. 
+- We also want a different overall intercept for each deployment. So, you still need the `s(deployment_num, bs = "re")` piece. But I don't completely trust what that is doing really. So you might just treat deployment number as a fixed effect in the model for now, even if it makes sense conceptually for it to be a random effect (so `+ deployment_num` would allow for different intercepts). 
+- If deployment number is fixed, the model is still a "mixed model" because of the time series component. Mixed models generally refer to any model that would have correlation in the errors: time series model, spatial models, and random intercept models are the most common.
+- It's smart to only use four sites for now. The model with the full data set with all audiomoths and multiple days will take a long time to fit (Emilia had to use the HPC because it took over 48 hours). 
+- Finally, thinking about the poster, I do want you to have some modeling stuff on the poster, but I also don't want to rush through this. I think it makes sense for you to fit this model either for a single site with multiple days (including eclipse day), which would involve using day instead of deployment number in the model, OR to fit this model for multiple days with just a few sites (so you would have the day-audiomoth combination in the model above). These models are close to what you have, so it should be doable to have them ready for the poster. Then, we can talk about more things we can do in the back-half of April.
+
+```{r}
+grid <- expand_grid(deployment_num = unique(all_sites$deployment_num),
+                     time_num = unique(all_sites$time_num))
+
+library(broom)
+
+predictions_df <- augment(all_sites_mod$gam, newdata = grid) |>
+  mutate(.fitted_prob = exp(.fitted) / (1 + exp(.fitted)))
+
+ggplot(data = predictions_df, aes(x = time_num, y = .fitted)) +
+  geom_line() +
+  facet_wrap(~deployment_num)
+
+ggplot(data = predictions_df, aes(x = time_num, y = .fitted_prob)) +
+  geom_line() +
+  facet_wrap(~deployment_num)
+```

@@ -1,0 +1,24 @@
+---
+title: " "
+author:
+  - name: Aidan Fauth
+affiliation:
+  - address: Department of Math, Computer Science, and Statistics
+  - address: St. Lawrence University
+  - address: Advised by Dr. Matt Higham
+column_numbers: 3
+output: 
+  posterdown::posterdown_html:
+   self_contained: true
+poster_height: "36in"
+poster_width: "48in"
+titlebox_borderwidth: "0cm"
+sectitle_textsize: "62pt"
+primary_colour: "#28405C"
+---
+
+
+
+
+
+

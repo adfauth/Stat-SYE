@@ -1,0 +1,426 @@
+---
+title: "**Constructing a Dashbaord for Barn Good Thrift**"
+author:
+  - name: 'Lacey Eckert'
+affiliation:
+  - address: Department of Mathematics, Computer Science, Statistics, and Data Science
+  - address: St. Lawrence University
+  - address: Advised by Dr. Matt Higham
+
+column_numbers: 3
+poster_height:	"36in"	
+poster_width:	"48in"
+primary_colour: "#058F4E"
+secondary_colour: "#058F4E"
+titlebox_bordercol:	"#058F4E"
+titlebox_borderwidth:	"0.5cm"
+font_family:	"Calibri"
+logoright_name: "posterImages/qr_code.PNG"
+logoleft_name: "posterImages/club_school_logo_clear.PNG"
+sectitle_bgcol:	"#058F4E"
+author_textcol:	"#ffffff"
+sectitle2_textcol:	"#058F4E"
+link_col:	"#058F4E"
+output: 
+  posterdown::posterdown_html:
+    self_contained: false
+
+bibliography: packages.bib
+---
+
+```{css, echo=FALSE}
+img {
+margin-top: 1pt;
+margin-bottom: 0.5pt;
+}
+```
+
+```{r setup, message=FALSE, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE,
+                      warning = FALSE,
+                      tidy = FALSE,
+                      message = FALSE,
+                      fig.align = 'center',
+                      out.width = "100%")
+options(knitr.table.format = "html") 
+library(tidyverse)
+library(knitr)
+library(kableExtra)
+# add more libraries here 
+```
+
+# What is Barn Good Thrift? 
+
+- Barn Good Thrift is an on-campus thrift store run by the student club, Close the Loop. 
+    - Goals: Decrease textile waste and promote circular fashion.
+
+- Implementation of detailed data collection starting in Fall 2024 included sales by both value and weight of textiles, all incoming donations of textiles by weight, daily open hours, and time of sales, as well as the sale payment method.
+
+# Objectives 
+
+1. Provide interactive data visualizations to support store operation decisions. 
+
+2. Quantify and visualize the saved environmental impacts associated with shopping at Barn Good Thrift. 
+
+# Methods and Tools 
+
+- Use the `googlesheets4` package, to pull in  the collected store data, then use `ggplot2` and `tidyverse` packages to clean, organize, and visualize. 
+
+- Use cradle-to-gate impacts of producing textiles provided by Dr. David Murphy, to quantify saved environmental impacts and then animate these measures using the `gganimate` package. 
+
+- Use `shiny` and `ShinyDashboard` to create the dashboard, hosted on the St. Lawrence University server.
+
+# Exploratory Analysis  
+```{r}
+#| output: false
+#| echo: false
+#| warning: false
+#| message: false
+## Dashbaord Overview 
+#An interactive Shiny dashboard was developed to analyze Barn Good Thrift’s business performance and environmental impact using live store data pulled from Google Sheets.
+
+## Business Insights 
+#To view periods of high and low sales, along with comparing the usage of vouchers (given in return for clothing donations to the store) versus Cash/Card for sales, the following plot was created. 
+```
+
+
+```{r}
+#| output: false
+#| echo: false
+#| warning: false
+#| message: false
+#| 
+library(googlesheets4)
+library(tidyverse)
+library(hms)
+
+# set authentication 
+gs4_auth(email = "sluclosetheloop@gmail.com")
+# load data 
+sheet_url <- "https://docs.google.com/spreadsheets/d/13YjLbjf9DyHJRbTRy3R2fG4N3AEIZXABmPwwaB25cCM/edit?gid=200044808#gid=200044808"
+
+# dataframes
+sales_df <- read_sheet(sheet_url, sheet = "Sales")
+activity_df <- read_sheet(sheet_url, sheet = "Activity")
+donations_df <- read_sheet(sheet_url, sheet = "Donations")
+
+# initial tidy data 
+# rename variables, assign types and account for possible missing values
+sales_df <- sales_df |> 
+  mutate(Semester = as.factor(Semester), 
+         Date = ymd(Date), 
+         Employee = as.factor(Employee),
+         Time = as_hms(Time)) |>
+  rename(salesWeightLbs = `Weight (lbs)`,
+         cashCredSales = `Cash/Credit Sale`,
+         estPrice = `Est. Price`,
+         voucherSales = `Voucher Sale`,
+         totalSales = `Total Sale`,
+  ) |>
+  filter(!if_all(-c(estPrice, totalSales), is.na))
+
+activity_df <- activity_df |> 
+  rename(timeOpen = `Time Open`,
+         timeClose = `Time Close`,
+         hoursOpen = `Hours Open`,
+         visitorsTotal = `Visitors (Total)`) |>
+  mutate(Semester = as.factor(Semester), 
+         Date = ymd(Date),
+         timeOpen = as_hms(timeOpen),
+         timeClose = as_hms(timeClose)) |>
+  filter(!if_all(-c(hoursOpen, Comments), is.na))
+
+donations_df <- donations_df |> 
+  rename(weightLbs = `Weight (lbs)`,
+         voucherValue = `Voucher Value`,
+         voucherGiven = `Actual Vouchers Given`
+  ) |>
+  mutate(Semester = as.factor(Semester), 
+         Date = ymd(Date),
+         Employee = as.factor(Employee)) |>
+  filter(!if_all(-c(voucherValue, Notes), is.na))
+
+# clean dataframes to put in write up 
+clean_sales_df <- sales_df |>
+  select(-Employee, -estPrice, -Notes) |>
+  slice(2:6)
+
+clean_activity_df <- activity_df |>
+  select(-Comments, -hoursOpen) |>
+  slice(1:5)
+
+clean_donations_df <- donations_df |>
+  select(-Employee, -Notes) |>
+  slice(1:5)
+```
+
+```{r}
+#| output: false
+#| echo: false
+#| warning: false
+#| message: false
+# don't include this output or code 
+# cumulative sales over time graph 
+# data prep 
+
+# sales per day 
+sales_day <- sales_df |> group_by(Date, Semester) |> 
+  summarise(day_cashSales = sum(cashCredSales, na.rm = TRUE),
+            day_voucherSales = sum(voucherSales, na.rm = TRUE),
+            day_totalSales = sum(totalSales, na.rm = TRUE))
+
+# join with activity to account for days with 0 sales 
+full_sales_day <- full_join(sales_day, activity_df, by = "Date")
+
+# clean the join 
+full_sales_day <- full_sales_day |>
+  mutate(
+    Semester = coalesce(Semester.x, Semester.y),
+    across(c(day_cashSales, day_voucherSales, day_totalSales),
+           ~ if_else(!is.na(.data$timeOpen) & !is.na(.data$timeClose) & is.na(.),
+                     0, .))) |>
+  select(-Semester.x, -Semester.y)
+
+# pivot longer to make a sales type column and get rid of rows with no date 
+sales_day_longer <- full_sales_day |>
+  pivot_longer(
+    cols = c(day_cashSales, day_voucherSales, day_totalSales),
+    names_to = "saleType",
+    values_to = "Value"
+  ) %>%
+  mutate(saleType = case_when(
+    saleType == "day_cashSales"   ~ "Cash/Credit",
+    saleType == "day_voucherSales" ~ "Voucher",
+    saleType == "day_totalSales"   ~ "All",
+    TRUE ~ "Other"
+  ),
+  saleType = factor(saleType, levels = c("All", "Cash/Credit", "Voucher"))) |> 
+  filter(!is.na(Date))
+
+# add a cumulative column 
+sales_day_longer <- sales_day_longer |> 
+  group_by(saleType) |>
+  arrange(Date) |>
+  mutate(cumulativeValue = cumsum(Value),
+         Year = case_when(
+           Semester %in% c("Fall 2024", "Spring 2025") ~ "Fall '24 - Spring '25",
+           Semester %in% c("Fall 2025", "Spring 2026") ~ "Fall '25 - Spring '26",
+           TRUE ~ NA_character_
+         )
+  )
+
+# make it weekly because it looks nicer 
+sales_weekly <- sales_day_longer |>
+  mutate(Week = floor_date(Date, unit = "week", week_start = 1)) |>  # make week column
+  group_by(saleType, Week, Year) |>
+  summarise(weeklyValue = sum(Value, na.rm = TRUE), .groups = "drop") |>
+  arrange(Week) |>
+  group_by(saleType, Year) |>
+  mutate(cumulativeWeekly = cumsum(weeklyValue))
+
+# define the gap for summer 
+gap_start <- as.Date("2025-05-05")
+gap_end   <- as.Date("2025-09-22")
+# Define the numeric location where the gap occurs (for the slashes)
+break_x <- as.numeric(gap_start)
+
+# make a compact week to use on the x-axis for skipping summer
+sales_weekly_mod <- sales_weekly |>
+  arrange(Week) %>%
+  mutate(
+    Week_compact = case_when(
+      Week < gap_start ~ as.numeric(Week),
+      Week >= gap_end ~ as.numeric(Week) - as.numeric(gap_end - gap_start),
+      TRUE ~ NA_real_  # remove summer weeks
+    )
+  ) %>%
+  filter(!is.na(Week_compact))
+
+# Matt's code to help with vertical break line 
+
+sales_weekly_mod_ay1 <- sales_weekly_mod |> filter(Year == "Fall '24 - Spring '25") 
+sales_weekly_mod_ay2 <- sales_weekly_mod |> filter(Year == "Fall '25 - Spring '26")
+extra_rows <- tibble(saleType = c("All", "Cash/Credit", "Voucher"),
+                     Week = lubridate::ymd(rep("2025-05-05", 3)),
+                     Year = rep("Fall '24 - Spring '25", 3),
+                     weeklyValue = c(0, 0, 0),
+                     cumulativeWeekly = c(0, 0, 0),
+                     Week_compact = rep(20206, 3))
+
+sales_weekly_break <- bind_rows(sales_weekly_mod_ay1, extra_rows, sales_weekly_mod_ay2)
+
+# cash voucher split 
+cash_voucher_sales_weekly_break <- sales_weekly_break |>
+        filter(saleType %in% c("Cash/Credit", "Voucher"))
+
+
+
+
+```
+
+```{r}
+#| output: false
+#| echo: false
+#| warning: false
+#| message: false
+# make split by type graph 
+p2 <- ggplot(data = cash_voucher_sales_weekly_break, aes(x = Week_compact, y = cumulativeWeekly, fill = saleType)) +
+             geom_area(alpha = 0.4, position = "identity") +
+             #geom_smooth(se = FALSE, aes(color = saleType)) + 
+             labs(title = "Cumulative Sales by Type Over Time",
+                  y = "Sales ($)",
+                  fill = "Sale Type") +
+      scale_x_continuous(
+        name = "Week",
+        breaks = c(
+          as.numeric(as.Date("2024-10-01")),
+          as.numeric(as.Date("2025-01-15")),
+          as.numeric(as.Date("2025-04-01")),
+          as.numeric(as.Date("2025-11-01")) - as.numeric(gap_end - gap_start)
+        ),
+        labels = c("Oct 2024", "Jan 2025", "Apr 2025", "Nov 2025")
+      ) +
+      scale_fill_brewer(palette = "Paired") +
+      theme_minimal(base_size = 12) +
+      theme(plot.title = element_text(size = 16)) 
+    # annotate to add slashes for axis brake 
+    p2 <- p2 + annotate("segment",
+                 x = break_x -7, xend = break_x -10,
+                 y = 15, yend = -20,
+                 size = 1, color = "black") +
+      annotate("segment",
+               x = break_x - 3, xend = break_x - 6,
+               y = 15, yend = -20,
+               size = 1, color = "black")
+
+```
+
+-  Cumulative total sales over time, split by sale type, across academic years. A break in the x-axis represents the summer period when the store was closed.
+
+```{r, out.width='100%', fig.height=3.5}
+#| echo: false
+p2
+```
+
+# Environmental Impacts 
+
+Using the Table 1, an interactive drop down selection between CO, water, and non-renewable energy and slider input to allow for different textile percentage mixes, the cumulative impact of all customers buying second-hand at Barn Good Thrift versus buying new is calculated. 
+
+```{r}
+#| output: true
+#| echo: false
+#| warning: false
+#| message: false
+env_tibble <- tibble(
+  'Environmental Indicator' = c("CO2", "Water", "Energy"),
+  'Polyester Impact' = c(4.82941539745433, 1.50222335702673, 93.7685245578778),
+  'Cotton Impact' = c(15.7786819, 240.126175, 174.3537037),
+  'Units' = c("kg CO2", "m3 of water",  "MJ (megajoule) of non-renewable energy")
+)
+
+kable(env_tibble, caption='Environmental Impacts from Production of One kg. of Fiber') |> kable_styling("striped", full_width = FALSE)
+```
+
+- Screenshot of Environmental Savings Calculation for CO₂ emissions
+```{r dashboardEnvCalcScreenshot, out.width='100%', fig.align='center', fig.height=2.5}
+# picture of env calculator 
+include_graphics("posterImages/env_impact_calc_picture.PNG")
+```
+
+To further the meaning of this calculation, animations for each commonly understood metric were utilized to visualize their values. 
+
+- Snapshot of the car moving back and fourth across the US, simulating travel on Interstate 80
+
+```{r dashboardAnimScreenshot, out.width='100%', fig.align='center', fig.height=2.5}
+# picture of car animation
+include_graphics("writeUp_pictures/animation_car_picture_2.PNG")
+```
+
+
+To view busy times during store hours and analyze possible days to extend hours, the following figure was produced. 
+
+```{r}
+#| output: false
+#| echo: false
+#| warning: false
+#| message: false
+# don't include this output or code 
+# heatmap graphs
+# data prep 
+
+sale_activity_join <- full_join(sales_df, activity_df, by = "Date")
+
+sale_time_groups <- sale_activity_join |> 
+  mutate(Year = case_when(
+    Semester.x %in% c("Fall 2024", "Spring 2025") ~ "Fall '24 - Spring '25",
+    Semester.x %in% c("Fall 2025", "Spring 2026") ~ "Fall '25 - Spring '26",
+    TRUE ~ NA_character_)
+  ) |>
+  mutate(day_of_week = wday(Date, label = TRUE, abbr = FALSE)) |>
+  filter(Year == "Fall '25 - Spring '26", !is.na(Time)) |>  # filter out place holders i manually put in 
+  mutate(hour_group = factor(hour(Time), levels = 0:23, labels = paste0(0:23, ":00")),
+         day_of_week = droplevels(day_of_week)) 
+
+sale_time_groups <- sale_time_groups |>
+  complete(day_of_week, hour_group, fill = list(totalSales = 0)) |>
+  group_by(day_of_week, hour_group) 
+
+sale_time_groups <- sale_time_groups |>
+  mutate(
+    day_of_week = fct_relevel(
+      day_of_week,
+      "Saturday", "Friday"
+    )
+  )
+
+# amount of sales in money
+sale_money_time_plot <- sale_time_groups |> 
+  filter(!is.na(cashCredSales) & !is.na(voucherSales)) |>
+  summarise(total_sales = sum(totalSales),  .groups = "drop") 
+
+# number of sales
+sale_number_time_plot <- sale_time_groups |> 
+  filter(!is.na(cashCredSales) & !is.na(voucherSales)) |>
+  summarise(total_sales = n(), .groups = "drop")
+```
+- Heat map of sales, in dollars ($), split into hourly groups, for store operations in the current Fall 2026 - Spring 2027 Academic Year.
+
+```{r, out.width='100%', fig.height=5}
+#| echo: false
+# heat map of sales ($) by time 
+ ggplot(data = sale_money_time_plot, aes(x = hour_group, y = day_of_week, fill = total_sales)) +
+      geom_tile() +
+      scale_fill_viridis_c() +
+      scale_x_discrete(position = "top") +
+      labs(
+        title = "Fall '25 and Spring '26 Sales Heatmap",
+        x = "Time Slot",
+        y = "Day of Week",
+        fill = "Sales ($)"
+      ) + 
+      theme_minimal(base_size = 15) + 
+      theme(axis.text.x = element_text(size = 10))
+```
+
+# Conclusion 
+
+- Close the Loop and Barn Good Thrift executive board members can leverage the power of the interactive dashboard to make informed business operation decisions. 
+
+- The store's saved environmental impacts can be easily interpreted and insightful for non-technical audiences showcasing the Club's success towards achieving it's mission. 
+
+```{r, include=FALSE}
+knitr::write_bib(c('knitr','rmarkdown','posterdown','pagedown'), 'packages.bib')
+```
+
+# References 
+
+Levi Strauss & Co. (2015). Life cycle assessment results for apparel production.
+https://www.levistrauss.com/wp-content/uploads/2015/03/Full-LCA-Results-Deck-FINAL.pdf
+
+IconsDB. Red car icon.
+https://www.iconsdb.com/red-icons/car-icon.html
+
+
+
+
+

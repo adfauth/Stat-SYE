@@ -1,0 +1,248 @@
+---
+title: "Addressing Temporal Correlation in Wildlife Audio Data During the 2024 Eclipse"
+author:
+  - name: Emilia Agostinelli
+affiliation:
+  - address: Department of Math, Computer Science, and Statistics
+  - address: St. Lawrence University
+  - address: Advised by Dr. Matt Higham
+column_numbers: 3
+output: 
+  posterdown::posterdown_html:
+   self_contained: true
+poster_height: "36in"
+poster_width: "48in"
+titlebox_borderwidth: "0cm"
+sectitle_textsize: "62pt"
+primary_colour: "#28405C"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+	echo = FALSE,
+	message = FALSE,
+	warning = FALSE,
+	singlespacing = TRUE
+)
+library(tidyverse)
+library(pander)
+library(nlme)
+library(mgcv)
+library(hms)
+library(broom)
+library(modelr)
+```
+
+# Abstract
+
+-   Exploring how audiological patterns in wildlife were affected by eclipse.
+
+-   Goal: address correlation between audio clips in model.
+
+-   **Key findings:**
+
+    - A first-order autoregressive term to the GAMM addressed correlation.
+  
+    - Approximately 1/2 audiomoths displayed clear spike in BEI index.
+
+# Background
+
+-   20 audio recording devices deployed in the Northern New York area.
+
+-   Data on 5 audiological indices recorded, including BEI (Bioacoustic Index), which measures diversity of noise.
+
+<!-- -   Day of eclipse was April 8th, totality period was 15:23:52 - 15:25:29. -->
+
+<!-- high values correspond to more species making noise; low values suggest fewer species making sound. -->
+
+```{r, out.width = "100%"}
+knitr::include_graphics(here::here("zoomed_audiomoths.png"))
+```
+
+# Data
+
+```{r}
+A001_SD001 <- readRDS(here::here("A001_SD001.rds"))
+A002_SD013 <- readRDS(here::here("A002_SD013.rds"))
+A003_SD005 <- readRDS(here::here("A003_SD005.rds"))
+A004_SD012 <- readRDS(here::here("A004_SD012.rds"))
+A005_SD002 <- readRDS(here::here("A005_SD002.rds"))
+A006_SD006 <- readRDS(here::here("A006_SD006.rds"))
+A007_SD017 <- readRDS(here::here("A007_SD017.rds"))
+A008_SD007 <- readRDS(here::here("A008_SD007.rds"))
+A009_SD009 <- readRDS(here::here("A009_SD009.rds"))
+A010_SD014 <- readRDS(here::here("A010_SD014.rds"))
+A011_SD018 <- readRDS(here::here("A011_SD018.rds"))
+A013_SD016 <- readRDS(here::here("A013_SD016.rds"))
+A014_SD021 <- readRDS(here::here("A014_SD021.rds"))
+A015_SD010 <- readRDS(here::here("A015_SD010.rds"))
+A016_SD022 <- readRDS(here::here("A016_SD022.rds"))
+A017_SD024 <- readRDS(here::here("A017_SD024.rds"))
+A018_SD011 <- readRDS(here::here("A018_SD011.rds"))
+A019_SD008 <- readRDS(here::here("A019_SD008.rds"))
+A021_SD023 <- readRDS(here::here("A021_SD023.rds"))
+A022_SD019 <- readRDS(here::here("A022_SD019.rds"))
+
+eclipse_start<-hms(00,00,14)
+eclipse_end<-hms(00,50,16)
+
+full_audio <- rbind(A001_SD001, A002_SD013, A003_SD005, A004_SD012,
+                    A005_SD002, A006_SD006, A007_SD017, A008_SD007,
+                    A009_SD009, A010_SD014, A011_SD018, A013_SD016,
+                    A014_SD021, A015_SD010, A016_SD022, A017_SD024,
+                    A018_SD011, A019_SD008, A021_SD023, A022_SD019)|>
+  group_by(folder_name)|>
+  mutate(folder_name = as_factor(folder_name)) |>
+  mutate(fullACI = sapply(ACI_all,sum))|>
+  mutate(fullADI = sapply(ADI_all, sum)) |>
+  mutate(hour_numeric = as.numeric(hour))|>
+  filter(hour>= eclipse_start & hour<= eclipse_end) |>
+  filter(day %in% c("2024-04-06", "2024-04-07", "2024-04-08",
+                    "2024-04-09", "2024-04-11")) |>
+  mutate(audiomoth_day = interaction(folder_name, day))
+
+table <- full_audio |>
+  select(day, hour, folder_name, hour_numeric, bei, aei, biophony) |>
+  rename(Audiomoth = folder_name) |>
+  mutate(Audiomoth = recode(
+    Audiomoth,
+    '"/A001_SD001"' = "Audiomoth 01"
+  ))
+  
+pander(head(table, 3))
+```
+
+# Data Exploration
+
+- Time series of one audiomoth on day of eclipse (April 8th).
+
+```{r, out.width = "100%"}
+apr8_am1 <- A001_SD001 |>
+  mutate(hour_numeric = as.numeric(hour)) |>
+  filter(day == "2024-04-08") |>
+filter(hour>= eclipse_start & hour<= eclipse_end)
+
+ggplot(apr8_am1, aes(x = hour_numeric, y = bei)) +
+  geom_line(linewidth = 1.2, color = "turquoise4") +
+  labs(
+    title = "Time Series of BEI on April 8, 2024",
+    subtitle = "Audiomoth 01",
+    x = "Time",
+    y = "BEI"
+  ) +
+  theme_minimal(base_size = 24) +
+  theme(plot.title = element_text(size = 20, face = "bold", hjust = 0.5),
+        axis.text.x  = element_text(size = 12),
+        plot.subtitle = element_text(size = 16),
+        axis.title.x = element_text(size = 16),
+        axis.title.y = element_text(size = 16)) +
+  scale_x_continuous(name = "Time", breaks = c(eclipse_start, hms(00,00,15), hms(00,00,16), eclipse_end))
+```
+
+- Spike in BEI seen during period of totality.
+
+# Fitted Model
+
+- Plot of fitted model for BEI through time for nine of twenty audiomoths.
+
+```{r, out.width = "100%"}
+mod1 <- readRDS(here::here("Modeling_Files/mod1.rds"))
+
+audio9 <- full_audio |>
+  filter(folder_name %in% c('"/A001_SD001"', '"/A003_SD005"','"/A010_SD014"', '"/A013_SD016"', '"/A014_SD021"', '"/A015_SD010"','"/A016_SD022"', '"/A017_SD024"', '"/A021_SD023"'))
+
+grid9 <- audio9 %>%
+  ungroup() %>%
+  distinct(folder_name, day) %>%
+  group_by(folder_name, day) %>%
+  tidyr::expand(hour_numeric = seq_range(full_audio$hour_numeric, n = 40)) %>%
+  mutate(audiomoth_day = interaction(folder_name, day, drop = TRUE)) |>
+  mutate(day = as.factor(day))
+
+gam_aug1 <- broom::augment(mod1$gam, newdata = grid9)
+
+ggplot() +
+  geom_point(data = audio9, 
+             aes(x = hour_numeric, y = bei), 
+             alpha = 0.4, color = "gray70") +
+  geom_line(data = gam_aug1, 
+            aes(x = hour_numeric, y = .fitted, 
+            color = day), linewidth = 1) +
+  facet_wrap(~ folder_name,
+             labeller = labeller(
+               folder_name = c(
+                 '"/A001_SD001"' = "Audiomoth 01",
+                 '"/A003_SD005"' = "Audiomoth 03",
+                 '"/A010_SD014"' = "Audiomoth 10",
+                 '"/A013_SD016"' = "Audiomoth 13",
+                 '"/A014_SD021"' = "Audiomoth 14",
+                 '"/A015_SD010"' = "Audiomoth 15",
+                 '"/A016_SD022"' = "Audiomoth 16",
+                 '"/A017_SD024"' = "Audiomoth 17",
+                 '"/A021_SD023"' = "Audiomoth 21")),
+             scales = "free_y") +
+  labs(title = "Fitted GAMM Model for BEI as Seen Through Nine Audiomoths",
+       x = "Hour (numeric)", 
+       y = "BEI",
+       color = "Day") +
+  theme_minimal() +
+  theme(legend.position = "bottom",
+        plot.title      = element_text(size = 15, face = "bold", hjust = 0.5),
+  axis.title.x    = element_text(size = 16),
+  axis.title.y    = element_text(size = 16),
+  axis.text.x     = element_text(size = 8),
+  axis.text.y     = element_text(size = 10),
+  strip.text      = element_text(size = 16),
+  legend.title    = element_text(size = 16),
+  legend.text     = element_text(size = 11)) +
+  scale_x_continuous(name = "Time", breaks = c(eclipse_start, hms(00,00,15), hms(00,00,16), eclipse_end)) +
+  scale_colour_viridis_d()
+
+grid <- full_audio %>%
+  ungroup() %>%
+  distinct(folder_name, day) %>%
+  group_by(folder_name, day) %>%
+  tidyr::expand(hour_numeric = seq_range(full_audio$hour_numeric, n = 40)) %>%
+  mutate(audiomoth_day = interaction(folder_name, day, drop = TRUE)) |>
+  mutate(day = as.factor(day))
+```
+
+# Model Continued
+The general form of a GAMM is shown below:
+$$
+y_{iad} = \beta_{ad} + f_{ad}(t_{iad}) + \epsilon_{iad},
+$$
+
+- $y_{id}$ is the response for the metric of interest (e.g., BEI, AEI, etc.) for the $i^{th}$ observation recorded on the $a^{th}$ audiomoth($a = 1, 2, \ldots, 20$) on the $d^{th}$ day of recording ($d = 1, 2, 3, 4, 5$).
+
+- $\beta_{ad}$ is a an intercept term that changes for each audiomoth-day combination.
+
+- $f_{ad}(t_{iad})$ is a smoother term for time (indexed by $i$) that changes for each audiomoth-day combination.
+
+- $t_{iad}$ is the time (in seconds) that the $i^{th}$ observation was recorded at the $a^{th}$ audiomoth and the $d^{th}$ day.
+
+- $\epsilon_{iad}$ are random errors that follow an AR(1) temporal correlation structure for each audiomoth-day combination with common shared correlation parameter $p$.
+
+# Takeaways
+
+- First-order autoregressive term addressed correlation in original model.
+
+- Approximately 1/2 audiomoths displayed clear spike in BEI during totality.
+
+- Other indices revealed potential patterns, but lack of evidence.
+
+- Certain audiomoths may have recorded patterns more than others.
+
+# References
+Gerber, Jacob E, Dakota Howard, and John E Quinn. 2020. “Soundscape Shifts During the 2017    Total Solar Eclipse: An Application of Dispersed Automated Recording Units to
+Study Ephemeral Acoustic Events.” *Biodiversity* 21 (1): 41–47.
+
+Heintzman, Kaitlin, and Matt Higham. 2024. “Analyzing Audio Data Patterns During the 2024     Solar Eclipse.” St. Lawrence University.
+
+James, Gareth, Daniela Witten, Trevor Hastie, Robert Tibshirani, et al. 2013. *An Introduction to Statistical Learning*. Vol. 112. 1. Springer.
+
+Villanueva-Rivera, Luis J., and Bryan C. Pijanowski. 2018. *Soundecology: Soundscape Ecology*. https://CRAN.R-project.org/package=soundecology.
+
+Wood, S. N. 2011. “Fast Stable Restricted Maximum Likelihood and Marginal Likelihood          Estimation of Semiparametric Generalized Linear Models.” *Journal of the Royal Statistical    Society (B)* 73 (1): 3–36. https://doi.org/10.1111/j.1467-9868.2010.00749.x.
+
+

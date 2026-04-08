@@ -1,0 +1,434 @@
+---
+title: "Pressure Point Patterns: A Look Into Tennis Tactics at the French Open"
+author:
+  - name: Brody Pinto
+affiliation:
+  - address: St. Lawrence University
+  - address: Department of Math, Computer Science, Statistics, and Data Science
+  - address: Advised by Dr. Matt Higham
+column_numbers: 3
+output: 
+  posterdown::posterdown_html:
+    self_contained: true
+    css: poster_caption_style.css
+poster_height: "36in"
+poster_width: "48in"
+titlebox_borderwidth: "0cm"
+sectitle_textsize: "58pt"
+primary_colour: "#1B2840"
+execute:
+  echo: false
+  warning: false
+---
+
+```{r setup, include=FALSE, warning=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE,
+                      singlespacing = TRUE)
+library(tidyverse)
+library(courtvisionr)
+library(kableExtra)
+library(jsonlite)
+```
+
+# Abstract
+
+- In tennis, mental skill is just as important as physical ability.
+
+- This project explores how elite players handle pressure situations (i.e., important points) to gain an edge over their opponents.
+
+- Shot trajectory data - with precise ball coordinates - from the 2019-2023 French Open tournaments was used.
+
+<!-- - ##REMOVE<font size = "6">The analysis required: extensive data cleaning, parsing of match scores, joining multiple data sources.</font> -->
+
+<!-- - ##REMOVE<font size = "6">These steps enabled the creation of visualizations showing how elite players serve and return during high-pressure points.</font> -->
+
+- **Key findings:**
+
+  - On serve, elite players tend to stick to their strengths and even play more aggressively under pressure (depending on their opponent).
+
+  - On return, elite players generally adopt a more conservative approach to their current strategy.
+
+# Data
+- **Trajectory data before transformation:**
+
+<div style="font-size: 29pt; font-family: monospace;">
+<pre>
+  [{"x": -11.3, "y":  1.1, "z": 2.607, "position": "hit"}, 
+   {"x": -11.3, "y":  1.1, "z": 2.607, "position": "peak"}, 
+   {"x": -0.283, "y": -2.827, "z": 0.033, "position": "bounce"}, 
+   {"x": -1.367, "y": -4.261, "z": 0.058, "position": "last"}]
+</pre>
+</div>
+
+- **Trajectory data after transformation:**
+
+```{r}
+# Your JSON-style data as a string
+trajectory_json <- '[{"x": -11.3, "y":  1.1, "z": 2.607, "position": "hit"},
+                     {"x": -11.3, "y":  1.1, "z": 2.607, "position": "peak"},
+                     {"x": -0.283, "y": -2.827, "z": 0.033, "position": "bounce"},
+                     {"x": -1.367, "y": -4.261, "z": 0.058, "position": "last"}]'
+
+# Convert to a data frame
+trajectory_df <- fromJSON(trajectory_json) |>
+  select(Position = position, x, y, z)
+
+# Pretty table with kableExtra styling
+trajectory_df |>
+  kable("html", align = "c") |>
+  kable_styling(
+    bootstrap_options = c("striped", "hover", "condensed", "responsive"),
+    full_width = FALSE,
+    font_size = 30,
+    position = "center"
+  ) |>
+  row_spec(0, bold = TRUE, background = "#E0E0E0") |>
+  row_spec(1:nrow(trajectory_df), extra_css = "padding: 8px;")
+
+```
+
+- **Data preview of the most relevant variables (using Roger Federer's 2021 R32 match against Dominik Koepfer):**
+
+```{r}
+federer_2021 <- filter_matches(player = "Roger Federer", year_of_interest = "2021")
+
+fed_table <- federer_2021 |>
+  filter(player2 == "Dominik Koepfer") |>
+  select(serverId, receiverId, game_score, set_score, match_score, atp_importance, atp_is_important, breakPoint) |>
+  rename() |> 
+  slice(334:341)
+
+fed_table |>
+  kable("html", align = "c") |>
+  kable_styling(
+    bootstrap_options = c("striped", "hover", "condensed", "responsive"),
+    full_width = FALSE,
+    font_size = 30,
+    position = "center"
+  ) |>
+  row_spec(0, bold = TRUE, background = "#E0E0E0", extra_css = "font-size: 19pt;") |>
+  row_spec(1:nrow(fed_table), extra_css = "font-size: 19pt; padding: 8px;")
+
+```
+
+# Summary Stats
+
+```{r, echo=FALSE, warning=FALSE}
+total_matches = all_matches |> 
+  distinct(match_id) |>
+  nrow()
+
+total_points = all_matches |> nrow()
+
+total_important_points = all_matches_importance |>
+  mutate(important_point = if_else(atp_importance >= 0.1 | wta_importance >= 0.1, 1, 0)) |>
+  summarise(total_important_points = sum(important_point, na.rm = TRUE)) |>
+  summarise(total = sum(total_important_points)) |>
+  pull(total)
+
+percentage_important_points = total_important_points / total_points * 100
+
+all_shots = clean_shot_level(all_matches)
+total_shots = sum(all_shots$is_hit, na.rm = TRUE)
+
+# Create a one-row summary data frame
+summary_stats <- tibble(
+  `Total Matches` = total_matches,
+  `Total Points` = total_points,
+  `Total Important Points` = total_important_points,
+  `Percent Important` = sprintf("%.1f%%", percentage_important_points),
+  `Total Shots` = total_shots
+)
+
+# Pretty table with kableExtra styling
+summary_stats |>
+  kable("html", align = "c") |>
+  kable_styling(
+    bootstrap_options = c("striped", "hover", "condensed", "responsive"),
+    full_width = FALSE,
+    font_size = 30,
+    position = "center"
+  ) |>
+  row_spec(0, bold = TRUE, background = "#E0E0E0") |>
+  row_spec(1, bold = FALSE, extra_css = "padding: 8px;")
+
+```
+
+# Case 1 - Rafael Nadal Serve Locations
+```{r, warning=FALSE, echo=FALSE, fig.width=15.85, fig.height=8.5, fig.cap="Blue dots represent serve locations on important points, grey dots represent serve locations on non-important points. Dots above the dashed line represent Deuce side serves, dots below the dashed line represent Ad side serves", fig.align='center', out.extra='style="margin-top:5px; margin-bottom:5px;"'}
+## Nadal's 2022 Run to the French Open Title:
+nadal_2022 <- filter_matches(player = "Rafael Nadal", year_of_interest = "2022")
+nadal_2022_shots <- clean_shot_level(nadal_2022)
+
+nadal_2022_serves <- nadal_2022_shots |>
+  filter(serverId == "Rafael Nadal") |>
+  filter(position == "bounce") |>
+  group_by(point_index, player2) |>
+  slice(1) |>
+  relocate(position, shot_index, x, y, z) |>
+  ungroup() |>
+  filter(pointEndType != "Faulty Serve") |>
+  filter(abs(x) < 6.410 & abs(x) > 0.5) |>
+  mutate(break_point = if_else((player1_game_score %in% c(0,15,30) & player2_game_score == 40) |
+                                 player2_game_score == "AD",
+                               true = "Break Point",
+                               false = "Not Break Point"))
+
+nadal_2022_deuce <- nadal_2022_serves |>
+  filter(court == "DeuceCourt") |>
+  mutate(x = if_else(abs(x) < 1, true = -abs(x), false = x),
+         y = if_else(abs(x) < 1, true = abs(y), false = y)) |>
+  mutate(y = if_else(x > 1, true = -y, false = y),
+         x = if_else(x > 1, true = -x, false = x)) |>
+  mutate(x = if_else(y < 0, true = -x, false = x),
+         y = if_else(y < 0, true = -y, false = y)) |>
+  # Rotate 90 degrees CCW: (x, y) -> (-y, x)
+  mutate(rot_x = -y, rot_y = x)
+
+nadal_2022_ad <- nadal_2022_serves |>
+  filter(court == "AdCourt") |>
+  mutate(x = if_else(abs(x) < 1, true = -abs(x), false = x),
+         y = if_else(abs(x) < 1, true = -abs(y), false = y)) |>
+  mutate(y = if_else(x > 1, true = -y, false = y),
+         x = if_else(x > 1, true = -x, false = x)) |>
+  # Rotate 90 degrees CCW: (x, y) -> (-y, x)
+  mutate(rot_x = -y, rot_y = x)
+
+nadal_2022_deucead <- bind_rows(nadal_2022_deuce, nadal_2022_ad)
+
+# ggplot(data = nadal_2022_deucead, aes(x = rot_x, y = rot_y)) +
+#   geom_density_2d_filled(show.legend = FALSE, bins = 9) +
+#   geom_point(aes(color = break_point, alpha = break_point, size = break_point), show.legend = FALSE) +
+#   scale_alpha_manual(name = "Break Point?", values = c(0.9, 0.4)) +
+#   scale_size_manual(name = "Break Point?", values = c(3.5, 2.5)) +
+#   scale_colour_manual(name = "Break Point?", values = c("#00FFFF", "black")) +
+#   scale_fill_brewer(palette = "Oranges") +
+#   guides(fill = "none") +
+#   draw_court() +
+#   facet_wrap(~plot_label_final, nrow = 1) +
+#   labs(title = "Rafael Nadal Serve Locations - Break Points - 2022 Title Run") +
+#   theme(
+#     plot.title = element_text(size = 37, face = "bold", hjust = 0.5),
+#     strip.text = element_text(size = 19)     # Facet labels
+#   )
+
+## TODO: CHANGE TO ATP_IS_IMPORTANT
+ggplot(data = nadal_2022_deucead, aes(x = rot_x, y = rot_y)) +
+  geom_density_2d_filled(show.legend = FALSE, bins = 9) +
+  geom_point(aes(color = atp_is_important, alpha = atp_is_important, size = atp_is_important), show.legend = FALSE) +
+  scale_alpha_manual(name = "Important Point?", values = c(0.4, 0.9)) +
+  scale_size_manual(name = "Important Point?", values = c(2.5, 3.5)) +
+  scale_colour_manual(name = "Important Point?", values = c("black", "#00FFFF")) +
+  scale_fill_brewer(palette = "Oranges") +
+  guides(fill = "none") +
+  draw_court() +
+  facet_wrap(~plot_label_final, nrow = 1) +
+  labs(title = "Rafael Nadal Serve Locations - Important Points - 2022 Title Run") +
+  theme(
+    plot.title = element_text(size = 37, face = "bold", hjust = 0.5),
+    strip.text = element_text(size = 19)     # Facet labels
+  )
+```
+
+- Nadal primarily targets his opponent's backhand.
+
+- For important points, Nadal generally follows the same serving strategy, with more aggressive serve locations (closer to the lines).
+
+- Against strong returners (e.g., Djokovic and Zverev), Nadal's serve locations are less predictable.
+
+# Case 2 - Iga Swiatek Serve Locations
+```{r, warning=FALSE, echo=FALSE, fig.width=15.85, fig.height=8.5, fig.cap="Blue dots represent serve locations on important points, grey dots represent serve locations on non-important points.", fig.align='center', out.extra='style="margin-top:5px; margin-bottom:5px;"'}
+## Swiatek's 2023 Run to the French Open Title:
+swiatek_2023 <- filter_matches(player = "Iga Swiatek", year_of_interest = "2023")
+swiatek_2023_shots <- clean_shot_level(swiatek_2023)
+
+swiatek_2023_serves <- swiatek_2023_shots |>
+  filter(serverId == "Iga Swiatek") |>
+  filter(position == "bounce") |>
+  group_by(point_index, player2) |>
+  slice(1) |>
+  relocate(position, shot_index, x, y, z) |>
+  ungroup() |>
+  filter(pointEndType != "Faulty Serve") |>
+  filter(abs(x) < 6.410 & abs(x) > 0.5) |>
+  mutate(break_point = if_else((player1_game_score %in% c(0,15,30) & player2_game_score == 40) |
+                                 player2_game_score == "AD",
+                               true = "Break Point",
+                               false = "Not Break Point"))
+
+swiatek_2023_deuce <- swiatek_2023_serves |>
+  filter(court == "DeuceCourt") |>
+  mutate(x = if_else(abs(x) < 1, true = -abs(x), false = x),
+         y = if_else(abs(x) < 1, true = abs(y), false = y)) |>
+  mutate(y = if_else(x > 1, true = -y, false = y),
+         x = if_else(x > 1, true = -x, false = x)) |>
+  mutate(x = if_else(y < 0, true = -x, false = x),
+         y = if_else(y < 0, true = -y, false = y)) |>
+  # Rotate 90 degrees CCW: (x, y) -> (-y, x)
+  mutate(rot_x = -y, rot_y = x)
+
+swiatek_2023_ad <- swiatek_2023_serves |>
+  filter(court == "AdCourt") |>
+  mutate(x = if_else(abs(x) < 1, true = -abs(x), false = x),
+         y = if_else(abs(x) < 1, true = -abs(y), false = y)) |>
+  mutate(y = if_else(x > 1, true = -y, false = y),
+         x = if_else(x > 1, true = -x, false = x)) |>
+  # Rotate 90 degrees CCW: (x, y) -> (-y, x)
+  mutate(rot_x = -y, rot_y = x)
+
+swiatek_2023_deucead <- bind_rows(swiatek_2023_deuce, swiatek_2023_ad)
+
+ggplot(data = swiatek_2023_deucead, aes(x = rot_x, y = rot_y)) +
+  geom_density_2d_filled(show.legend = FALSE, bins = 9) +
+  geom_point(aes(color = wta_is_important, alpha = wta_is_important, size = wta_is_important), show.legend = FALSE) +
+  scale_alpha_manual(name = "Important Point", values = c(0.4, 0.9)) +
+  scale_size_manual(name = "Important Point", values = c(2.5, 3.5)) +
+  scale_colour_manual(name = "Important Point", values = c("black", "#00FFFF")) +
+  scale_fill_brewer(palette = "Oranges") +
+  guides(fill = "none") +
+  draw_court() +
+  facet_wrap(~plot_label_final, nrow = 1) +
+  labs(title = "Iga Swiatek Serve Locations - Important Points - 2023 Title Run") +
+  theme(
+    plot.title = element_text(size = 37, face = "bold", hjust = 0.5),
+    strip.text = element_text(size = 19)     # Facet labels
+  )
+```
+
+- Swiatek's primary strategy is serving to the middle of the service box, providing more *margin for error* while taking away her opponent's angles on the return.
+
+- On important points she implements the same strategy with more aggressive serve locations (closer to the lines).
+
+# Case 3 - Novak Djokovic Return Locations
+```{r, warning=FALSE, echo=FALSE, fig.width=15.85, fig.height=8.5, fig.cap="Blue dots represent return locations on break points, grey dots represent return locations on non-break points.", fig.align='center', out.extra='style="margin-top:5px; margin-bottom:5px;"'}
+## Djokovic's 2021 Run to the Title, defeating Stephanos Tsitsipas in the Final
+djokovic_2021 <- filter_matches(player = "Novak Djokovic", year_of_interest = "2021")
+djokovic_2021_shots <- clean_shot_level(djokovic_2021)
+
+djokovic_2021_returns <- djokovic_2021_shots |>
+  filter(receiverId == "Novak Djokovic") |>
+  filter(position == "bounce") |>
+  group_by(point_index, player2) |>
+  slice(2) |>
+  mutate(y = if_else(x < 0, true = -y, false = y),
+         x = if_else(x < 0, true = -x, false = x),
+         serve = as_factor(serve),
+         serve = fct_relevel(serve, "1","2")) |>
+  relocate(position, shot_index, x, y, z)  |>
+  # Rotate 90 degrees CCW: (x, y) -> (-y, x)
+  mutate(rot_x = -y, rot_y = x)
+
+## Joining for net clearance
+djokovic_2021_returns_clearance <- djokovic_2021_shots |>
+  filter(receiverId == "Novak Djokovic") |>
+  filter(position == "net") |>
+  group_by(point_index, player2) |>
+  slice(2) |>
+  filter(net_clearance > 0) |>
+  relocate(net_clearance, position, shot_index, x, y, z) |>
+  # Rotate 90 degrees CCW: (x, y) -> (-y, x)
+  mutate(rot_x = -y, rot_y = x)
+
+djokovic_2021_returns_joined <- left_join(djokovic_2021_returns, djokovic_2021_returns_clearance,
+                                          by = c("match_id", "set", "game", "point", "hit_count")) |>
+  relocate(net_clearance.y)
+
+# ## COLORING BY IS_IMPORTANT
+# ggplot(data = djokovic_2021_returns_joined, aes(x = rot_x.x, y = rot_y.x)) +
+#   geom_density_2d_filled(show.legend = FALSE, bins = 9) +
+#   geom_point(show.legend = FALSE, aes(color = atp_is_important.x, alpha = atp_is_important.x, size = atp_is_important.x)) +
+#   scale_colour_manual(name = "Important Point", values = c("black", "#00FFFF")) +
+#   scale_alpha_manual(name = "Important Point", values = c(0.4, 0.9)) +
+#   scale_size_manual(name = "Important Point", values = c(2.5, 3.5)) +
+#   scale_fill_brewer(palette = "Oranges") +
+#   guides(fill = "none") +
+#   draw_court() +
+#   facet_wrap(~plot_label_final.x, nrow = 1) +
+#   labs(title = "Novak Djokovic Return Locations - Important Points - 2021 Title Run") +
+#   theme(
+#     plot.title = element_text(size = 34, face = "bold", hjust = 0.5),
+#     strip.text = element_text(size = 19)     # Facet labels
+#   )
+
+## COLORING BY breakPoint
+ggplot(data = djokovic_2021_returns_joined, aes(x = rot_x.x, y = rot_y.x)) +
+  geom_density_2d_filled(show.legend = FALSE, bins = 9) +
+  geom_point(show.legend = FALSE, aes(color = breakPoint.x, alpha = breakPoint.x, size = breakPoint.x)) +
+  scale_colour_manual(name = "Break Point", values = c("black", "#00FFFF")) +
+  scale_alpha_manual(name = "Break Point", values = c(0.4, 0.9)) +
+  scale_size_manual(name = "Break Point", values = c(2.5, 3.5)) +
+  scale_fill_brewer(palette = "Oranges") +
+  guides(fill = "none") +
+  draw_court() +
+  facet_wrap(~plot_label_final.x, nrow = 1) +
+  labs(title = "Novak Djokovic Return Locations - Break Points - 2021 Title Run") +
+  theme(
+    plot.title = element_text(size = 34, face = "bold", hjust = 0.5),
+    strip.text = element_text(size = 19)     # Facet labels
+  )
+```
+
+- Djokovic targets most of his returns at his opponent's backhand with a consistent return depth - this sets him apart from his competitors.
+
+- Djokovic is the best in the world at locking in for pressure situations, he made **all** 58 returns on break point opportunities in the 2021 tourney:
+
+```{r, warning=FALSE, echo=FALSE}
+library(kableExtra)
+
+return_stats <- djokovic_2021_returns |>
+  mutate(return_made = if_else(abs(x) <= 11.88 & abs(x) > 0 & abs(y) <= 4.11, 1, 0)) |>
+  group_by(breakPoint) |>
+  summarise(
+    returns_hit = n(),
+    returns_made = sum(return_made),
+    .groups = "drop"
+  ) |>
+  mutate(proportion_returns_made = returns_made / returns_hit) |>
+  rename(
+    `Break Point` = breakPoint,
+    `Returns Hit` = returns_hit,
+    `Returns Made` = returns_made,
+    `Percent Returns in Play` = proportion_returns_made
+  )
+
+# Pretty table
+return_stats |>
+  mutate(`Percent Returns in Play` = scales::percent(`Percent Returns in Play`, accuracy=0.1)) |>
+  kable("html", align = "c") |>
+  kable_styling(
+    bootstrap_options = c("striped", "hover", "condensed", "responsive"),
+    full_width = FALSE,
+    font_size = 30,
+    position = "center"
+  ) |>
+  row_spec(0, bold = TRUE, background = "#E0E0E0") |>
+  row_spec(1:nrow(return_stats), extra_css = "padding: 8px;")
+
+```
+
+# Key Takeaways
+
+- Players adapt differently under pressure:
+
+  - On **serve**, Nadal and Swiatek often maintain their strategy but play *more aggressively* on important points.
+  
+  - On **return**, Djokovic prioritizes consistency in high-stakes moments.
+
+- Only **~17%** of all points are labeled as important, but they have a disproportionately large impact on match outcomes.
+
+- **Shot placement data** allows us to visualize elite players' serve and return patterns in response to pressure, enabling more nuanced performance analysis.
+
+# References
+
+<ul style="margin-top: 5px; margin-bottom: 5px; line-height: 2.4; font-size: 18pt;">
+  <li>Kovalchik, S. A. and Reid M. (2018). Measuring Clutch Performance in Professional Tennis. <i>Statistica Applicata - Italian Journal of Applied Statistics</i>, 30(2), 255–268. 
+    <a href="https://doi.org/10.26398/IJAS.0030-011" style="color: #1B2840;">https://doi.org/10.26398/IJAS.0030-011</a>
+  </li>
+  <li><code>atp_importance</code> values are derived using Kovalchik's <code>deuce</code> package.</li>
+  <li>ATP/WTA player data provided by Jeff Sackmann: 
+    <a href="https://github.com/JeffSackmann/tennis_atp" style="color: #1B2840;">https://github.com/JeffSackmann/tennis_atp</a>
+  </li>
+  <li>Roland Garros tracking data obtained from Infosys Match Centre: 
+    <a href="https://www.infosys.com/roland-garros/" style="color: #1B2840;">https://www.infosys.com/roland-garros/</a>
+  </li>
+</ul>

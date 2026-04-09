@@ -1,5 +1,5 @@
 ---
-title: " "
+title: "Modeling Community and Species Level Acoustic Responses to the 2024 Total Eclipse"
 author:
   - name: Aidan Fauth
 affiliation:
@@ -14,8 +14,45 @@ poster_height: "36in"
 poster_width: "48in"
 titlebox_borderwidth: "0cm"
 sectitle_textsize: "62pt"
-primary_colour: "#28405C"
+primary_colour: "#144f29"
 ---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+	echo = FALSE,
+	message = FALSE,
+	warning = FALSE,
+	singlespacing = TRUE
+)
+library(tidyverse)
+library(pander)
+library(nlme)
+library(mgcv)
+library(hms)
+library(broom)
+library(here)
+```
+
+# Abstract
+
+- Investigating changes in wildlife vocalization patterns due to solar eclipse
+
+- Leveraging an AI species identifier (BirdNET) to obtain species-level data
+
+- Goal: model community and species level response to eclipse using prescence/absence data
+
+# Background
+
+- Deployed 20 audio recorders (AudioMoths) in St. Lawrence County, NY
+
+```{r, out.width="50%", fig.show="hold", echo=FALSE}
+knitr::include_graphics(c("eclipse_map_red.jpg", "zoomed_audiomoths.png"))
+```
+
+# BirdNET Workflow
+
+
+
 
 
 

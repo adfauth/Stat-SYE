@@ -17,6 +17,7 @@ library(hms)
 library(here)
 ```
 
+# Unfiltered
 
 ## Compiling and Formatting Data Frame
 
@@ -91,5 +92,77 @@ join_by(AM_id == recorder_lab_id_num))
 write_csv(merged_df, here("Data/merged_output_deployment.csv"))
 ```
 
+
+# Species List
+
+This is the same code as above but now creating a main df for the output filtered with the species list.
+
+```{r}
+file_list <- list.files(path = here("Output"), pattern = "full_sp.csv$",)
+
+# read in all the files as dfs
+df_list <- map(file_list, \(x) read_csv(here("Output", x)))
+
+# process each df to then bind_rows
+cleaned_list <- map(df_list, \(x) x |> relocate(file) |>
+  pivot_longer(4:ncol(x), names_to = "species", values_to = "probability") |>
+  filter(!is.na(probability)))
+
+# add a column with the AM name
+for (i in 1:length(cleaned_list)){
+  cleaned_list[[i]] <- cleaned_list[[i]] |> 
+    mutate(id = str_sub(file_list[[i]], start = 8, end = 17))
+}
+
+# compile into single df
+temp_df <- bind_rows(cleaned_list)
+```
+
+
+### Create date and time variables
+
+```{r}
+main_df <- temp_df |> mutate(date = str_sub(file, start = 1, end = 8),
+          hour = str_sub(file, 10, 11),
+          minute = str_sub(file, 12, 13),
+          second = str_sub(file, 14, 15)) |>
+  unite("date_time", c("date", "hour", "minute", "second"), sep = ":") |>
+  mutate(date_time = ymd_hms(date_time),
+          time = as_hms(date_time))
+```
+
+
+## Write csv for Birdnet output
+
+```{r}
+write_csv(main_df, here("Data/birdnet_output_filtered.csv"))
+```
+
+## Unite with Audio Moth Deployments
+
+Take a look at the deployment df
+```{r}
+deploy <- read_csv(here("Data/eclipse_audio_moth_deployments.csv"))
+```
+
+To merge the two data frames I need to create a new variable in the output df that will match with the `recorder_lab_id_num`
+
+```{r}
+main_df <- main_df |> mutate(AM_id = 
+  as.numeric(str_extract(id, "[1-9][0-9]*")))
+```
+
+Now we can merge using a left join:
+
+```{r}
+merged_df <- left_join(main_df, deploy, 
+join_by(AM_id == recorder_lab_id_num))
+```
+
+## Save merged data to Data folder
+
+```{r}
+write_csv(merged_df, here("Data/merged_output_deployment_filtered.csv"))
+```
 
 

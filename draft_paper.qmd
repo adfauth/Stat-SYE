@@ -13,7 +13,7 @@ library(tidyverse)
 library(here)
 library(hms)
 library(pander)
-merged_df <- read_csv(here("Data/merged_output_deployment.csv"))
+merged_df <- read_csv(here("Data/merged_output_deployment_filtered.csv"))
 ```
 
 ## Introduction

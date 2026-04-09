@@ -15,7 +15,7 @@ library(nlme)
 library(mgcv)
 library(forecast)
 library(hms) 
-merged_df <- read_csv(here("Data/merged_output_deployment.csv"))
+merged_df <- read_csv(here("Data/merged_output_deployment_filtered.csv"))
 ```
 
 #### Fix datetime variable

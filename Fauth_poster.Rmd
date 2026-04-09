@@ -46,7 +46,7 @@ library(here)
 - Deployed 20 audio recorders (AudioMoths) in St. Lawrence County, NY
 
 ```{r, out.width="50%", fig.show="hold", echo=FALSE}
-knitr::include_graphics(c("eclipse_map_red.jpg", "zoomed_audiomoths.png"))
+knitr::include_graphics(c("eclipse_map_red.jpg", "zoomed_audiomoths.jpeg"))
 ```
 
 # BirdNET Workflow

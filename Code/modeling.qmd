@@ -213,5 +213,5 @@ summary(three_d_mod$gam)
 plot(three_d_mod$gam)
 ```
 
-
+This took a long time to run even with 3 days and 3 sites.
 

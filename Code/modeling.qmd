@@ -74,7 +74,8 @@ AM0011_all_sp <- AM0011_all_sp |> distinct(time, .keep_all = TRUE)
 # need time variable to be numeric:
 AM0011_all_sp$time_num <- as.numeric(AM0011_all_sp$time)
 
-AM0011_mod <- gamm(Presence ~ s(time_num), data = AM0011_all_sp, family = binomial, correlation = corAR1(form = ~ time_num))
+AM0011_mod <- gamm(Presence ~ s(time_num), data = AM0011_all_sp, family = binomial, 
+correlation = corAR1(form = ~ time_num))
 summary(AM0011_mod$gam)
 plot(AM0011_mod$gam)
 ```
@@ -87,7 +88,7 @@ Acf(resids_AM0011)
 ```
 
 
-## All AMs on Eclipse Day
+## 4 AMs on Eclipse Day
 
 Next we will use the same model to look at all species from all the sites, but still only on eclipse day.
 
@@ -98,7 +99,10 @@ Next we will use the same model to look at all species from all the sites, but s
 time_start <- as_hms("14:55:30")
 time_end <- as_hms("15:55:30")
 
-all_sites <- merged_df |> filter(as_date(date_time) == "2024-04-08") |> 
+four_AMs <- c("AM0001", "AM0003", "AM0017", "AM0020")
+
+four_sites <- merged_df |> filter(deployment_num %in% four_AMs) |> 
+  filter(as_date(date_time) == "2024-04-08") |> 
     filter(between(time, time_start, time_end)) |>
     group_by(deployment_num) |> # want to complete the gaps for each site/AM
     complete(time = as_hms(seq(as.numeric(time_start), as.numeric(time_end), by = 3)), 
@@ -108,31 +112,27 @@ all_sites <- merged_df |> filter(as_date(date_time) == "2024-04-08") |>
     true = 1,
     false = 0)) |> 
       relocate(Presence, probability) |> 
-      filter(seconds(time) != 57) |> 
-    distinct(time, .keep_all = TRUE) # get rid of any species at the same timestamp
+      filter(seconds(time) != 57) |>
+    group_by(deployment_num) |> 
+    distinct(time, .keep_all = TRUE) |> # get rid of any species at the same timestamp
+    ungroup()
 ```
 
 ### Model
 
 ```{r}
-# 1. Ensure site is a factor and data is sorted
-all_sites$deployment_num <- as.factor(all_sites$deployment_num)
+# Ensure site is a factor and data is sorted
+four_sites$deployment_num <- as.factor(four_sites$deployment_num)
 
-# 2. Create the within-site observation order to avoid duplicate timestamp errors
-all_sites <- all_sites |> 
-  group_by(deployment_num) |> 
-  mutate(obs_order = row_number()) |> 
-  ungroup()
+four_sites$time_num <- as.numeric(four_sites$time)
 
-all_sites$time_num <- as.numeric(all_sites$time)
-
-# 3. Fit the model
-all_sites_mod <- gamm(Presence ~ s(time_num, by = deployment_num) + deployment_num,
+# Fit the model
+four_sites_mod <- gamm(Presence ~ s(time_num, by = deployment_num) + deployment_num,
                    family = binomial,
-                   data = all_sites,
-                   correlation = corAR1(form = ~ obs_order | deployment_num))
-summary(all_sites_mod$gam)
-plot(all_sites_mod$gam)
+                   data = four_sites,
+                   correlation = corAR1(form = ~ 1 | deployment_num))
+summary(four_sites_mod$gam)
+plot(four_sites_mod$gam)
 ```
 
 Both models seem to be working?
@@ -146,12 +146,12 @@ Thanks Aidan! It does look like the model is giving reasonable results, so this 
 - Finally, thinking about the poster, I do want you to have some modeling stuff on the poster, but I also don't want to rush through this. I think it makes sense for you to fit this model either for a single site with multiple days (including eclipse day), which would involve using day instead of deployment number in the model, OR to fit this model for multiple days with just a few sites (so you would have the day-audiomoth combination in the model above). These models are close to what you have, so it should be doable to have them ready for the poster. Then, we can talk about more things we can do in the back-half of April.
 
 ```{r}
-grid <- expand_grid(deployment_num = unique(all_sites$deployment_num),
-                     time_num = unique(all_sites$time_num))
+grid <- expand_grid(deployment_num = unique(four_sites$deployment_num),
+                     time_num = unique(four_sites$time_num))
 
 library(broom)
 
-predictions_df <- augment(all_sites_mod$gam, newdata = grid) |>
+predictions_df <- augment(four_sites_mod$gam, newdata = grid) |>
   mutate(.fitted_prob = exp(.fitted) / (1 + exp(.fitted)))
 
 ggplot(data = predictions_df, aes(x = time_num, y = .fitted)) +
@@ -163,24 +163,26 @@ ggplot(data = predictions_df, aes(x = time_num, y = .fitted_prob)) +
   facet_wrap(~deployment_num)
 ```
 
-## 1 AM Over Multiple Days
+## 3 AM Over Multiple Days
 
 ### Filter DF
 
 ```{r}
-# 5 day span
-day1 <- ymd_hms("2024-04-06 00:00:00")
-day5 <- ymd_hms("2024-04-10 23:59:59")
+# 3 day span
+day1 <- ymd_hms("2024-04-07 00:00:00")
+day3 <- ymd_hms("2024-04-9 23:59:59")
 
 # eclipse time: 15:25:30
 time_start <- as_hms("14:55:30")
 time_end <- as_hms("15:55:30")
 
-five_day_AM0003 <- merged_df |> filter(deployment_num == "AM0003") |> 
+three_AMs <- c("AM0001", "AM0003", "AM0017")
+
+three_day <- merged_df |> filter(deployment_num %in% three_AMs) |> 
   filter(between(time, time_start, time_end)) |>
-  filter(day1 <= date_time & date_time <= day5) |>
+  filter(day1 <= date_time & date_time <= day3) |>
   mutate(date = as_date(date_time)) |> 
-  group_by(date) |> # want to complete the gaps for each site/AM
+  group_by(deployment_num, date) |> # want to complete the gaps for each site/AM
   complete(time = as_hms(seq(as.numeric(time_start), as.numeric(time_end), by = 3)), 
   fill = list(value = NA)) |> 
     ungroup() |> 
@@ -189,22 +191,27 @@ five_day_AM0003 <- merged_df |> filter(deployment_num == "AM0003") |>
     false = 0)) |> 
       relocate(Presence, probability) |> 
       filter(seconds(time) != 57) |> 
-      distinct(time, .keep_all = TRUE) # get rid of any species at the same timestamp
+      group_by(deployment_num, date) |> 
+      distinct(time, .keep_all = TRUE) |> # get rid of any species at the same timestamp
+      ungroup()
 ```
 
 
 ## Model
 
 ```{r}
-five_day_AM0003 <- five_day_AM0003 |> mutate(day = as_factor(day(date)))
+three_day <- three_day |> mutate(day = as_factor(day(date)),
+audiomoth_day = interaction(deployment_num, day))
 
-five_day_AM0003$time_num <- as.numeric(five_day_AM0003$time)
+three_day$time_num <- as.numeric(three_day$time)
 
-AM0003_5d_mod <- gamm(Presence ~ s(time_num, by = day) + deployment_num,
+three_d_mod <- gamm(Presence ~ s(time_num, by = audiomoth_day) + audiomoth_day,
                    family = binomial,
-                   data = five_day_AM0003,
-                   correlation = corAR1(form = ~ time_num | day))
-summary(_mod$gam)
-plot(all_sites_mod$gam)
+                   data = three_day,
+                   correlation = corAR1(form = ~ 1 | audiomoth_day))
+summary(three_d_mod$gam)
+plot(three_d_mod$gam)
 ```
+
+
 

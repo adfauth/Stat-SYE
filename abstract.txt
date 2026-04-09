@@ -1,8 +1,7 @@
 Title: Modeling Community and Species Level Acoustic Responses to the 2024 Total Eclipse
 
 Solar eclipses are a rare natural experiment to investigate the effect that sudden changes in light have on animal activity, in particular, vocalizations. 
-We used an AI species identifier (BirdNET-Analyzer developed by Cornell Lab of Ornithology) to identify species within audio files to investigate the overall and species-level responses to the eclipse. 
+We used an AI species identifier (BirdNET-Analyzer developed by Cornell Lab of Ornithology) to identify species within audio files, collected by Erika Barthelmess, to investigate the community and species level responses to the eclipse. 
 Through our data exploration, we found that, during a 1 hr. interval centered at totality, the overall vocalization pattern was different on the day of the eclipse (April 8th) compared to the other days sampled (March 30th - April 16th). 
-Through our exploratory visualizations, we saw that the overall vocalizations increased during the eclipse, but specific birds and anurans responed differently. 
-We then used a GAMM model to investigate the presence/absence of all species vocalizations incorporating time, day, site, and an autoregressive term. 
+Through our exploratory visualizations and statistical modeling, we saw that the overall vocalizations increased during the eclipse, but specific birds and anurans responded differently.  
 We found a difference in vocalization presence during the eclipse compared to the surrounding days, and that time of day was useful in predicting the presence of calls.

@@ -213,6 +213,59 @@ grid.arrange(sp_plot, cg_plot, ncol = 2)
 
 # Modeling
 
+```{r}
+# 3 day span
+day1 <- ymd_hms("2024-04-07 00:00:00")
+day3 <- ymd_hms("2024-04-9 23:59:59")
 
+# eclipse time: 15:25:30
+time_start <- as_hms("14:55:30")
+time_end <- as_hms("15:55:30")
+
+mult_AMs <- c("AM0001", "AM0011", "AM0017", "AM0002", "AM0009", "AM0020")
+
+AM_6_3d <- merged_df |> filter(deployment_num %in% mult_AMs) |> 
+  filter(between(time, time_start, time_end)) |>
+  filter(day1 <= date_time & date_time <= day3) |>
+  mutate(date = as_date(date_time)) |> 
+  group_by(deployment_num, date) |> # want to complete the gaps for each site/AM
+  complete(time = as_hms(seq(as.numeric(time_start), as.numeric(time_end), by = 3)), 
+  fill = list(value = NA)) |> 
+    ungroup() |> 
+    mutate(Presence = if_else(!is.na(probability),
+    true = 1,
+    false = 0)) |> 
+      relocate(Presence, probability) |> 
+      filter(seconds(time) != 57) |> 
+      group_by(deployment_num, date) |> 
+      distinct(time, .keep_all = TRUE) |> # get rid of any species at the same timestamp
+      ungroup()
+
+AM_6_3d <- AM_6_3d |> mutate(day = as_factor(day(date)),
+audiomoth_day = interaction(deployment_num, day))
+
+AM_6_3d$time_num <- as.numeric(three_day$time)
+```
+
+
+```{r}
+load("AM_6_3d_mod.rda")
+```
+
+
+```{r}
+grid_2 <- expand_grid(deployment_num = unique(AM_6_3d$audiomoth_day),
+                     time_num = unique(AM_6_3d$time_num))
+
+
+predictions_df <- augment(AM_6_3d_mod$gam, newdata = grid_2) |>
+  mutate(.fitted_prob = exp(.fitted) / (1 + exp(.fitted)))
+
+ggplot(data = predictions_df, aes(x = time_num, y = .fitted_prob)) +
+  geom_line() +
+  facet_wrap(~audiomoth_day)+
+  
+
+```
 
 

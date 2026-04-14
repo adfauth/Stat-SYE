@@ -54,7 +54,9 @@ main_df <- temp_df |> mutate(date = str_sub(file, start = 1, end = 8),
           second = str_sub(file, 14, 15)) |>
   unite("date_time", c("date", "hour", "minute", "second"), sep = ":") |>
   mutate(date_time = ymd_hms(date_time),
-          time = as_hms(date_time))
+          time = as_hms(date_time)) |> 
+  mutate(date_time = date_time + seconds(start),
+    time = as_hms(time + start))
 ```
 
 
@@ -128,7 +130,9 @@ main_df <- temp_df |> mutate(date = str_sub(file, start = 1, end = 8),
           second = str_sub(file, 14, 15)) |>
   unite("date_time", c("date", "hour", "minute", "second"), sep = ":") |>
   mutate(date_time = ymd_hms(date_time),
-          time = as_hms(date_time))
+          time = as_hms(date_time)) |> 
+            mutate(date_time = date_time + seconds(start),
+    time = as_hms(time + start))
 ```
 
 

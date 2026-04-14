@@ -18,14 +18,6 @@ library(hms)
 merged_df <- read_csv(here("Data/merged_output_deployment_filtered.csv"))
 ```
 
-#### Fix datetime variable
-
-```{r}
-merged_df <- merged_df |> 
-    mutate(date_time = date_time + seconds(start),
-    time = as_hms(time + start))
-```
-
 ## Single AM on Eclipse Day
 
 Here we will do a simplified model where we will only look at one site on eclipse day but look at all species.

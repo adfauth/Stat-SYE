@@ -247,7 +247,7 @@ ggplot(wf_5d, aes(time, Presence))+
   theme_minimal()
 ```
 
-The Canada goose was the most common bird species across the 5 days for this time scale (Table 1). It's overall patter across the 5 days does not seem different, but there's a notable gap in presence directly at the time of totality (Fig 6).
+The Canada goose was the most common bird species across the 5 days for this time scale (Table 1). It's overall pattern across the 5 days does not seem different, but there's a notable gap in presence directly at the time of totality (Fig 6).
 
 ```{r}
 cgo_5d <- five_day |> filter(species == "Branta canadensis_Canada Goose") |>

@@ -36,15 +36,15 @@ merged <- read_csv(here("Data/merged_output_deployment_filtered.csv"))
 
 # Abstract
 
-- Investigating changes in wildlife vocalization patterns due to solar eclipse
+- Investigating changes in wildlife vocalization patterns due to solar eclipse on April 8th, with totality at 3:23 - 3:26 pm.
 
-- Leveraging an AI species identifier (BirdNET) to obtain species-level data
+- Used an AI species identifier (BirdNET) to obtain species-level data.
 
-- Goal: model community and species level response to eclipse using prescence/absence data
+- Goal: model community and species level response to eclipse using prescence/absence data.
 
 # Background
 
-- Deployed 20 audio recorders (AudioMoths) in St. Lawrence County, NY
+- Deployed 20 audio recorders (AudioMoths) in St. Lawrence County, NY.
 
 ```{r, out.width="50%", fig.show="hold"}
 knitr::include_graphics(c("eclipse_map_red.jpg", "zoomed_audiomoths.jpeg"))
@@ -74,7 +74,7 @@ output |> group_by(id) |>
 
 # Data Exploration
 
-Determining time interval of interest:
+**Determining time interval of interest:**
 
 ```{r}
 days <- c(1:15)
@@ -133,9 +133,11 @@ ggplot(data = df_count, aes(x = interval_size, y = new_hits)) +
 
 ```
 
-Community level graph:
+**Community level graph:**
 
-```{r, out.width = "100%", fig.height = 4, fig.align = "center"}
+- Community-level vocal activity increased during eclipse, peaking at totality.
+
+```{r, out.width = "100%", fig.height = 3.5, fig.align = "center"}
 # days
 day1 <- ymd_hms("2024-04-07 00:00:00")
 day3 <- ymd_hms("2024-04-09 23:59:59")
@@ -161,14 +163,18 @@ time_start, time_end)) |>
       relocate(Presence, probability) |> 
       filter(seconds(time) != 57)
 
+#geom_rect(xmin =  hms(52,23,15), xmax = hms(05,27,15), ymin = 0, ymax = 3, fill = "lightblue", alpha = 0.3)+
+
 # whole data set
 ggplot(three_day, aes(time, Presence))+
+  geom_rect(xmin = hms(52,23,15), xmax = hms(05,27,15), ymin = -0.05, 
+  ymax = 1.05, fill = "darkseagreen", alpha = 0.3)+
   geom_jitter(width = 0, height = 0.05, alpha = 0.01, color = "darkgray")+
-  geom_smooth(se = F)+
+  geom_smooth(se = F, color = "black")+
   facet_grid(~day(date), labeller = as_labeller(days))+
   scale_x_time()+
-  labs(x = "Time")+
-  #scale_x_continuous(name = "Time", breaks = c(hms(30,55,14), hms(30,25,15), hms(30,55,15)))+
+  labs(x = "Time",
+  y = "Detected")+
   theme_minimal(base_size = 14)+
   theme(
     axis.text.x = element_text(size = 10),
@@ -177,9 +183,11 @@ ggplot(three_day, aes(time, Presence))+
     plot.title = element_text(size = 14))
 ```
 
-Species level graphs:
+**Species level graphs:**
 
-```{r, out.width = "100%", fig.height = 4}
+- Evidence of species behaving differently due to the eclipse.
+
+```{r, out.width = "100%", fig.height = 3.57}
 # spring peeper
 sp_3d <- three_day |> filter(species == "Pseudacris crucifer_Spring Peeper") |>
   group_by(date, id) |> 
@@ -191,12 +199,14 @@ sp_3d <- three_day |> filter(species == "Pseudacris crucifer_Spring Peeper") |>
   filter(seconds(time) != 57)
 
 sp_plot <- ggplot(sp_3d, aes(time, Presence))+
+  geom_rect(xmin = hms(52,23,15), xmax = hms(05,27,15), ymin = -0.05, 
+  ymax = 1.05, fill = "darkseagreen", alpha = 0.3)+
   geom_jitter(width = 0, height = 0.05, alpha = 0.02, color = "darkgray")+
-  geom_smooth(se = F)+
+  geom_smooth(se = F, color = "black")+
   facet_grid(~day(date), labeller = as_labeller(days))+
   labs(title = "Spring Peeper",
-      x = "Time")+
-  #scale_x_continuous(name = "Time", breaks = c(hms(30,55,14), hms(30,25,15), hms(30,55,15)))+
+      x = "Time",
+      y = "Detected")+
   theme_minimal(base_size = 14)+
   theme(
     axis.text.x = element_text(angle = 45, hjust = 1, size = 10),
@@ -217,12 +227,14 @@ cgr_3d <- three_day |> filter(species == "Quiscalus quiscula_Common Grackle") |>
   filter(seconds(time) != 57)
 
 cg_plot <- ggplot(cgr_3d, aes(time, Presence))+
+  geom_rect(xmin = hms(52,23,15), xmax = hms(05,27,15), ymin = -0.05, 
+  ymax = 1.05, fill = "darkseagreen", alpha = 0.3)+
   geom_jitter(width = 0, height = 0.05, alpha = 0.05, color = "darkgray")+
-  geom_smooth(se = F)+
+  geom_smooth(se = F, color = "black")+
   facet_grid(~day(date), labeller = as_labeller(days))+
   labs(title = "Common Grackle",
-      x = "Time")+
-  #scale_x_continuous(name = "Time", breaks = c(hms(30,55,14), hms(30,25,15), hms(30,55,15)))+
+      x = "Time",
+      y = "Detected")+
   theme_minimal(base_size = 14)+
   theme(
     axis.text.x = element_text(angle = 45, hjust = 1, size = 10),
@@ -240,9 +252,9 @@ $$
 \operatorname{logit}(\pi_{iad}) = \beta_{ad} + f_{ad}(t_{iad}) + \epsilon_{iad}
 $$
 
-- $\pi_{id}$ is the probability of detecting a species for the $i^{th}$ observation recorded on the $a^{th}$ audiomoth($a = 1, 2, \ldots, 20$) on the $d^{th}$ day of recording ($d = 1, 2, 3, 4, 5$).
+- $\pi_{id}$ is the probability of detecting a species for the $i^{th}$ observation recorded on the $a^{th}$ audiomoth($a = 1, 2, \ldots, 6$) on the $d^{th}$ day of recording ($d = 1, 2, 3$).
 
-- $\beta_{ad}$ is a an intercept term that changes for each audiomoth-day combination.
+- $\beta_{ad}$ is the intercept for each audiomoth-day combination.
 
 - $f_{ad}(t_{iad})$ is a smoother term for time (indexed by $i$) that changes for each audiomoth-day combination.
 
@@ -290,13 +302,16 @@ load("AM_6_3d_mod.rda")
 ```
 
 
-```{r, out.width = "100%"}
+```{r, out.width = "100%", fig.height = 4.10}
 grid_2 <- expand_grid(audiomoth_day = unique(AM_6_3d$audiomoth_day),
                      time_num = unique(AM_6_3d$time_num))
 
 
 predictions_df <- augment(AM_6_3d_mod$gam, newdata = grid_2) |>
-  mutate(.fitted_prob = exp(.fitted) / (1 + exp(.fitted)))
+  mutate(.fitted_prob = exp(.fitted) / (1 + exp(.fitted))) |> 
+  filter(audiomoth_day != "AM0017.7" &
+  audiomoth_day != "AM0017.8" &
+  audiomoth_day != "AM0017.9")
 
 new_labels = c(
   "AM0001.7" = "AM0001 Apr 7",
@@ -311,17 +326,19 @@ new_labels = c(
   "AM0011.7" = "AM0011 Apr 7",
   "AM0011.8" = "AM0011 Apr 8",
   "AM0011.9" = "AM0011 Apr 9",
-  "AM0017.7" = "AM0017 Apr 7",
-  "AM0017.8" = "AM0017 Apr 8",
-  "AM0017.9" = "AM0017 Apr 9",
+  #"AM0017.7" = "AM0017 Apr 7",
+  #"AM0017.8" = "AM0017 Apr 8",
+  #"AM0017.9" = "AM0017 Apr 9",
   "AM0020.7" = "AM0020 Apr 7",
   "AM0020.8" = "AM0020 Apr 8",
   "AM0020.9" = "AM0020 Apr 9"
 ) # to replace facet labels
 
 ggplot(data = predictions_df, aes(x = time_num, y = .fitted_prob)) +
+  geom_rect(xmin = 55432, xmax = 55625, ymin = 0, ymax = 1, 
+  fill = "darkseagreen", alpha = 0.3)+
   geom_line() +
-  facet_wrap(~audiomoth_day, labeller = as_labeller(new_labels))+
+  facet_wrap(~audiomoth_day, labeller = as_labeller(new_labels), ncol = 5)+
   labs(y = "Fitted Probabilities",
   x = "Time (sec)")+
   theme_minimal(base_size = 14)+
@@ -330,12 +347,17 @@ ggplot(data = predictions_df, aes(x = time_num, y = .fitted_prob)) +
 
 # Takeaways
 
- - generally increased detections during eclipse
+ - Generally increased detections during eclipse
 
- - specific species exhibit different behaviors
+ - Specific species exhibit different behaviors
 
- - **Future directions:**
+ **Future directions:**
+ 
   - Run model for all sites and all days
 
   - Trends for similar species (i.e. anurans, birds)
 
+  - Validation of BirdNET output
+
+*Thank you to Dr. Erika Barthelmess & SLU Mammal Crew for the field work!*
+*BirdNET was developed by Cornell Lab of Ornithology.*

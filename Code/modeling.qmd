@@ -208,7 +208,7 @@ plot(three_d_mod$gam)
 This took a long time to run even with 3 days and 3 sites.
 
 ```{r}
-grid <- expand_grid(deployment_num = unique(three_day$audiomoth_day),
+grid <- expand_grid(audiomoth_day = unique(three_day$audiomoth_day),
                      time_num = unique(three_day$time_num))
 
 
@@ -217,11 +217,11 @@ predictions_df <- augment(three_d_mod$gam, newdata = grid) |>
 
 ggplot(data = predictions_df, aes(x = time_num, y = .fitted)) +
   geom_line() +
-  facet_wrap(~deployment_num)
+  facet_wrap(~audiomoth_day)
 
 ggplot(data = predictions_df, aes(x = time_num, y = .fitted_prob)) +
   geom_line() +
-  facet_wrap(~deployment_num)
+  facet_wrap(~audiomoth_day)
 ```
 
 
@@ -266,7 +266,7 @@ AM_6_3d$time_num <- as.numeric(AM_6_3d$time)
 
 AM_6_3d_mod <- gamm(Presence ~ s(time_num, by = audiomoth_day) + audiomoth_day,
                    family = binomial,
-                   data = three_day,
+                   data = AM_6_3d,
                    correlation = corAR1(form = ~ 1 | audiomoth_day))
 # save model for poster
 save(AM_6_3d_mod, file = "AM_6_3d_mod.rda")
@@ -276,7 +276,7 @@ summary(AM_6_3d_mod$gam)
 #### Plot
 
 ```{r}
-grid_2 <- expand_grid(deployment_num = unique(AM_6_3d$audiomoth_day),
+grid_2 <- expand_grid(audiomoth_day = unique(AM_6_3d$audiomoth_day),
                      time_num = unique(AM_6_3d$time_num))
 
 

@@ -1,11 +1,9 @@
 ---
-title: "Modeling Community and Species Level Acoustic Responses to the 2024 Total Eclipse"
+title: "Modeling Community & Species Level Acoustic Responses to the 2024 Eclipse"
 author:
-  - name: Aidan Fauth
+  - name: Aidan Fauth <br>
 affiliation:
-  - address: Department of Math, Computer Science, and Statistics
-  - address: St. Lawrence University
-  - address: Advised by Dr. Matt Higham
+  - address: Department of Math, Computer Science, and Statistics <br> St. Lawrence University <br> Advised by Dr. Matt Higham
 column_numbers: 3
 output: 
   posterdown::posterdown_html:
@@ -39,24 +37,30 @@ merged <- read_csv(here("Data/merged_output_deployment_filtered.csv"))
 # Abstract
 
 - Investigating changes in wildlife vocalization patterns due to solar eclipse
+
 - Leveraging an AI species identifier (BirdNET) to obtain species-level data
+
 - Goal: model community and species level response to eclipse using prescence/absence data
 
 # Background
 
 - Deployed 20 audio recorders (AudioMoths) in St. Lawrence County, NY
 
-```{r, out.width="50%", fig.show="hold", echo=FALSE}
+```{r, out.width="50%", fig.show="hold"}
 knitr::include_graphics(c("eclipse_map_red.jpg", "zoomed_audiomoths.jpeg"))
 ```
 
 # BirdNET Workflow
-```{r, out.width="100%"}
+```{r, out.width= "60%", fig.align = "center"}
 knitr::include_graphics("spectogram_example.png")
 ```
 
-```{r, out.width = 200, fig.show="hold", fig.align="center"}
-knitr::include_graphics(c( "birdnet_logo.png", "arrow.png"))
+```{r, out.width = 270, fig.align = "center"}
+knitr::include_graphics("birdnet_logo.png")
+```
+
+```{r, out.width = 75, fig.align = "center"}
+knitr::include_graphics("arrow.png")
 ```
 
 ```{r}
@@ -70,7 +74,7 @@ output |> group_by(id) |>
 
 # Data Exploration
 
-Determining time interval of interest
+Determining time interval of interest:
 
 ```{r}
 days <- c(1:15)
@@ -89,7 +93,7 @@ merged <- merged |> mutate(time_basic = as_hms(time) |> as.numeric()) |>
 focused_time <- merged |> filter(day(date_time) %in% days)
 ```
 
-```{r, out.width = "100%"}
+```{r, out.width = "100%", fig.height = 3, fig.align = "center"}
 
 filter_interval <- function(mid_point, df, interval, min_prob) {
   df |> filter(time_basic >= mid_point - interval & time_basic <= mid_point + interval) |>
@@ -120,29 +124,32 @@ df_count <- df_count |> group_by(day, month) |>
 
 
 ggplot(data = df_count, aes(x = interval_size, y = new_hits)) +
-  geom_line(aes(group = day, colour = eclipse_ind), alpha = 0.5) +
+  geom_line(aes(group = day, colour = eclipse_ind), alpha = 0.5, width = 2) +
   scale_colour_viridis_d() +
   labs(x = "Interval Around Totality (seconds)",
   y = "New Species Detections",
   colour = "Day")+
-  theme_minimal()
+  theme_minimal(base_size = 16)
 
 ```
 
-Community level graph
+Community level graph:
 
-```{r, out.width = "100%"}
-# 5 day span
-day1 <- ymd_hms("2024-04-06 00:00:00")
-day5 <- ymd_hms("2024-04-10 23:59:59")
+```{r, out.width = "100%", fig.height = 4, fig.align = "center"}
+# days
+day1 <- ymd_hms("2024-04-07 00:00:00")
+day3 <- ymd_hms("2024-04-09 23:59:59")
+#day5 <- ymd_hms("2024-04-10 23:59:59")
+
+days <- c("7" = "April 7th", "8" = "April 8th", "9" = "April 9th")
 
 # eclipse time: 15:25:30
 time_start <- as_hms("14:55:30")
 time_end <- as_hms("15:55:30")
 
-five_day <- merged |> filter(between(time, 
+three_day <- merged |> filter(between(time, 
 time_start, time_end)) |>
-  filter(day1 <= date_time & date_time <= day5) |>
+  filter(day1 <= date_time & date_time <= day3) |>
   mutate(date = as_date(date_time)) |> 
   group_by(date, id) |> # want to complete the gaps for each site/AM
   complete(time = as_hms(seq(as.numeric(time_start), as.numeric(time_end), by = 3)), 
@@ -155,17 +162,26 @@ time_start, time_end)) |>
       filter(seconds(time) != 57)
 
 # whole data set
-ggplot(five_day, aes(time, Presence))+
-  geom_jitter(width = 0, height = 0.05)+
+ggplot(three_day, aes(time, Presence))+
+  geom_jitter(width = 0, height = 0.05, alpha = 0.01, color = "darkgray")+
   geom_smooth(se = F)+
-  facet_wrap(~day(date))+
+  facet_grid(~day(date), labeller = as_labeller(days))+
   scale_x_time()+
-  theme_minimal()
+  labs(x = "Time")+
+  #scale_x_continuous(name = "Time", breaks = c(hms(30,55,14), hms(30,25,15), hms(30,55,15)))+
+  theme_minimal(base_size = 14)+
+  theme(
+    axis.text.x = element_text(size = 10),
+    #axis.title.x = element_text(size = 10),
+    #axis.title.y= element_text(size = 10),
+    plot.title = element_text(size = 14))
 ```
 
-```{r, out.width = "100%"}
+Species level graphs:
+
+```{r, out.width = "100%", fig.height = 4}
 # spring peeper
-sp_5d <- five_day |> filter(species == "Pseudacris crucifer_Spring Peeper") |>
+sp_3d <- three_day |> filter(species == "Pseudacris crucifer_Spring Peeper") |>
   group_by(date, id) |> 
   complete(time = as_hms(seq(as.numeric(time_start), as.numeric(time_end), by = 3)), 
   fill = list(value = NA)) |>
@@ -174,18 +190,24 @@ sp_5d <- five_day |> filter(species == "Pseudacris crucifer_Spring Peeper") |>
     false = 0)) |> 
   filter(seconds(time) != 57)
 
-sp_plot <- ggplot(sp_5d, aes(time, Presence))+
-  geom_jitter(width = 0, height = 0.05)+
+sp_plot <- ggplot(sp_3d, aes(time, Presence))+
+  geom_jitter(width = 0, height = 0.05, alpha = 0.02, color = "darkgray")+
   geom_smooth(se = F)+
-  facet_grid(~day(date))+
-  scale_x_time()+
-  labs(title = "Spring Peeper")+
-  theme_minimal()+
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+  facet_grid(~day(date), labeller = as_labeller(days))+
+  labs(title = "Spring Peeper",
+      x = "Time")+
+  #scale_x_continuous(name = "Time", breaks = c(hms(30,55,14), hms(30,25,15), hms(30,55,15)))+
+  theme_minimal(base_size = 14)+
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1, size = 10),
+    #axis.title.x = element_text(size = 10),
+    #axis.title.y= element_text(size = 10),
+    plot.title = element_text(size = 14))
+  
   
 
 # grackle
-cgr_5d <- five_day |> filter(species == "Quiscalus quiscula_Common Grackle") |>
+cgr_3d <- three_day |> filter(species == "Quiscalus quiscula_Common Grackle") |>
   group_by(date, id) |> 
   complete(time = as_hms(seq(as.numeric(time_start), as.numeric(time_end), by = 3)), 
   fill = list(value = NA)) |>
@@ -194,24 +216,39 @@ cgr_5d <- five_day |> filter(species == "Quiscalus quiscula_Common Grackle") |>
     false = 0)) |> 
   filter(seconds(time) != 57)
 
-cg_plot <- ggplot(cgr_5d, aes(time, Presence))+
-  geom_jitter(width = 0, height = 0.05)+
+cg_plot <- ggplot(cgr_3d, aes(time, Presence))+
+  geom_jitter(width = 0, height = 0.05, alpha = 0.05, color = "darkgray")+
   geom_smooth(se = F)+
-  facet_grid(~day(date))+
-  scale_x_time(guide = guide_axis(check.overlap = TRUE))+
-  labs(title = "Common Grackle")+
-  theme_minimal()+
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+  facet_grid(~day(date), labeller = as_labeller(days))+
+  labs(title = "Common Grackle",
+      x = "Time")+
+  #scale_x_continuous(name = "Time", breaks = c(hms(30,55,14), hms(30,25,15), hms(30,55,15)))+
+  theme_minimal(base_size = 14)+
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1, size = 10),
+    #axis.title.x = element_text(size = 10),
+    #axis.title.y= element_text(size = 10),
+    plot.title = element_text(size = 14))
+  
 
 grid.arrange(sp_plot, cg_plot, ncol = 2)
 ```
 
-
-
-
-
-
 # Modeling
+Generalized Additive Mixed Model (GAMM):
+$$
+\operatorname{logit}(\pi_{iad}) = \beta_{ad} + f_{ad}(t_{iad}) + \epsilon_{iad}
+$$
+
+- $\pi_{id}$ is the probability of detecting a species for the $i^{th}$ observation recorded on the $a^{th}$ audiomoth($a = 1, 2, \ldots, 20$) on the $d^{th}$ day of recording ($d = 1, 2, 3, 4, 5$).
+
+- $\beta_{ad}$ is a an intercept term that changes for each audiomoth-day combination.
+
+- $f_{ad}(t_{iad})$ is a smoother term for time (indexed by $i$) that changes for each audiomoth-day combination.
+
+- $t_{iad}$ is the time (in seconds) that the $i^{th}$ observation was recorded at the $a^{th}$ audiomoth and the $d^{th}$ day.
+
+- $\epsilon_{iad}$ are random errors that follow an AR(1) temporal correlation structure for each audiomoth-day combination with common shared correlation parameter $p$.
 
 ```{r}
 # 3 day span
@@ -224,7 +261,7 @@ time_end <- as_hms("15:55:30")
 
 mult_AMs <- c("AM0001", "AM0011", "AM0017", "AM0002", "AM0009", "AM0020")
 
-AM_6_3d <- merged_df |> filter(deployment_num %in% mult_AMs) |> 
+AM_6_3d <- merged |> filter(deployment_num %in% mult_AMs) |> 
   filter(between(time, time_start, time_end)) |>
   filter(day1 <= date_time & date_time <= day3) |>
   mutate(date = as_date(date_time)) |> 
@@ -244,7 +281,7 @@ AM_6_3d <- merged_df |> filter(deployment_num %in% mult_AMs) |>
 AM_6_3d <- AM_6_3d |> mutate(day = as_factor(day(date)),
 audiomoth_day = interaction(deployment_num, day))
 
-AM_6_3d$time_num <- as.numeric(three_day$time)
+AM_6_3d$time_num <- as.numeric(AM_6_3d$time)
 ```
 
 
@@ -253,19 +290,52 @@ load("AM_6_3d_mod.rda")
 ```
 
 
-```{r}
-grid_2 <- expand_grid(deployment_num = unique(AM_6_3d$audiomoth_day),
+```{r, out.width = "100%"}
+grid_2 <- expand_grid(audiomoth_day = unique(AM_6_3d$audiomoth_day),
                      time_num = unique(AM_6_3d$time_num))
 
 
 predictions_df <- augment(AM_6_3d_mod$gam, newdata = grid_2) |>
   mutate(.fitted_prob = exp(.fitted) / (1 + exp(.fitted)))
 
+new_labels = c(
+  "AM0001.7" = "AM0001 Apr 7",
+  "AM0001.8" = "AM0001 Apr 8",
+  "AM0001.9" = "AM0001 Apr 9",
+  "AM0002.7" = "AM0002 Apr 7",
+  "AM0002.8" = "AM0002 Apr 8",
+  "AM0002.9" = "AM0002 Apr 9",
+  "AM0009.7" = "AM0009 Apr 7",
+  "AM0009.8" = "AM0009 Apr 8",
+  "AM0009.9" = "AM0009 Apr 9",
+  "AM0011.7" = "AM0011 Apr 7",
+  "AM0011.8" = "AM0011 Apr 8",
+  "AM0011.9" = "AM0011 Apr 9",
+  "AM0017.7" = "AM0017 Apr 7",
+  "AM0017.8" = "AM0017 Apr 8",
+  "AM0017.9" = "AM0017 Apr 9",
+  "AM0020.7" = "AM0020 Apr 7",
+  "AM0020.8" = "AM0020 Apr 8",
+  "AM0020.9" = "AM0020 Apr 9"
+) # to replace facet labels
+
 ggplot(data = predictions_df, aes(x = time_num, y = .fitted_prob)) +
   geom_line() +
-  facet_wrap(~audiomoth_day)+
-  
-
+  facet_wrap(~audiomoth_day, labeller = as_labeller(new_labels))+
+  labs(y = "Fitted Probabilities",
+  x = "Time (sec)")+
+  theme_minimal(base_size = 14)+
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 10))
 ```
 
+# Takeaways
+
+ - generally increased detections during eclipse
+
+ - specific species exhibit different behaviors
+
+ - **Future directions:**
+  - Run model for all sites and all days
+
+  - Trends for similar species (i.e. anurans, birds)
 

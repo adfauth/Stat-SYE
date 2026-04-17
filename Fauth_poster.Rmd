@@ -347,17 +347,17 @@ ggplot(data = predictions_df, aes(x = time_num, y = .fitted_prob)) +
 
 # Takeaways
 
- - Generally increased detections during eclipse
+ - Generally, increased detections during eclipse.
 
- - Specific species exhibit different behaviors
+ - Estimated detection is species-specific and location-specific.
 
  **Future directions:**
  
-  - Run model for all sites and all days
+  - Run model for all sites and all days.
 
-  - Trends for similar species (i.e. anurans, birds)
+  - Trends for similar species (i.e. anurans, birds).
 
-  - Validation of BirdNET output
+  - Validation of BirdNET output.
 
 *Thank you to Dr. Erika Barthelmess & SLU Mammal Crew for the field work!*
 *BirdNET was developed by Cornell Lab of Ornithology.*

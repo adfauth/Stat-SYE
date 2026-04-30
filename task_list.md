@@ -1,5 +1,12 @@
 # Task List
 
+## For Final's Week
+
+1. Run full model and smaller model without anthropogenic noises on HPC.
+
+2. Get rough draft of paper by Wednesday at noon.
+
+
 ## For April 9
 
 1. Write abstract and title (bring to next week's meeting).

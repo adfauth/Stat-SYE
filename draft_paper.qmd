@@ -1,5 +1,5 @@
 ---
-title: "Analyzing Audio Patterns During the 2024 Total Solar Eclipse"
+title: "Modeling Community & Species Level Acoustic Responses to the 2024 Eclipse"
 author:
   - name: "Aidan Fautn"
   - name: "Advisor: Matt Higham"

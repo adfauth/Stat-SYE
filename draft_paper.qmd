@@ -16,7 +16,6 @@ format:
            \usepackage{setspace}
            \onehalfspacing
            \linespread{2}
-           \usepackage{lineno}\linenumbers
      include-before-body: toc_separator.tex
 # format:
 #  html:
@@ -208,7 +207,6 @@ df_count <- df_count |> group_by(day, month) |>
 ## this second one is just the raw number of new hits as the interval size
 ## surrounding the eclipse slowly increases by 1 minute on each side,
 ## centered at totality
-
 ## this suggests that there is an increase in overall call rate
 ## during the eclipse but that we are looking too far out
 ## the increasing amount of calls peters off as we get further from 
@@ -222,7 +220,6 @@ ggplot(data = df_count, aes(x = interval_size, y = new_hits)) +
   y = "New Species Detections",
   colour = "Day")+
   theme_minimal()
-
 ```
 
 We investigated the vocalization pattern from all species on eclipse day compared to other days during this interval. The figure below depicts the presence of any species from all sites during a span of 5 days including the date of the eclipse. The response variable, presence, is defined as 1 (species identified) or 0 (no species detected). The black line is a smoother that follows the trend of species identifications (gray points) over the time interval. The vertical green bar indicates the time period (15:23:52 - 15:27:05) which totality occurred on eclipse day. The graph shows that during the day of the eclipse (April 8th), there is a clear peak in activity centered at the time of totality, which is not present in other days. 

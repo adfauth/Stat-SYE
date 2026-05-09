@@ -449,7 +449,7 @@ We saw that the smoothers were generally significant, meaning it was benefitial 
 tidy(com_mod$gam) |> pander(split.cells = Inf)
 ```
 
-As seen with the smoothers and in the plot below, the day and the site seems to result in a different pattern. We do still see the increase in overall vocalizations on April 8th, but the patterns become more varied from a peak at totality at different AudioMoth sites. All AudioMoths (AM001, AM0002, AM009) and days () are displayed in the plot below. 
+As seen with the smoothers and in the plot below, the day and the site seems to result in a different pattern. We do still see the increase in overall vocalizations on April 8th, but the patterns become more varied from a peak at totality at different AudioMoth sites. All AudioMoths (AM0001, AM0002, AM0009, AM0011, AM0017, AM0020) and days (April 7th - April 9th) are displayed in the plot below. 
 
 ```{r fig.height = 8}
 #| echo: false

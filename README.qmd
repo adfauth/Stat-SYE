@@ -48,6 +48,8 @@ This project explores the differences in vocalization activity of birds, Anurans
 We used audio data collected using 20 AudioMoths deployed around in St. Lawrence County, NY.
 
 ```{r}
+#| warning: false
+#| echo: false
 knitr::include_graphics(c("eclipse_map_red.jpg", "zoomed_audiomoths.jpeg"))
 ```
 
@@ -121,9 +123,10 @@ You can see that around ± 30 around totality (1800 seconds) is where the number
 
 **Community level graph:**
 
-Community-level vocal activity increased during eclipse, peaking at totality.
-
-```{r, out.width = "100%", fig.height = 3.5, fig.align = "center"}
+Community-level vocal activity increased during eclipse, peaking at totality (green bar). 
+```{r}
+#| warning: false
+#| echo: false
 # days
 day1 <- ymd_hms("2024-04-07 00:00:00")
 day3 <- ymd_hms("2024-04-09 23:59:59")
@@ -149,7 +152,6 @@ time_start, time_end)) |>
       relocate(Presence, probability) |> 
       filter(seconds(time) != 57)
 
-#geom_rect(xmin =  hms(52,23,15), xmax = hms(05,27,15), ymin = 0, ymax = 3, fill = "lightblue", alpha = 0.3)+
 
 # whole data set
 ggplot(three_day, aes(time, Presence))+
@@ -164,16 +166,16 @@ ggplot(three_day, aes(time, Presence))+
   theme_minimal(base_size = 14)+
   theme(
     axis.text.x = element_text(size = 10),
-    #axis.title.x = element_text(size = 10),
-    #axis.title.y= element_text(size = 10),
     plot.title = element_text(size = 14))
 ```
 
 **Species level graphs:**
 
-We saw evidence of species behaving differently due to the eclipse. The Spring Peeper is by far the most common species in the data set and drives much of the pattern seen the community - level graph. The Common Grackle had one of the more dramatic patterns 
+We saw evidence of species behaving differently due to the eclipse. The Spring Peeper is by far the most common species in the data set and drives much of the pattern seen the community - level graph. The Common Grackle had one of the more dramatic patterns, with a huge peak in calls during totality. The birds were more idiosyncratic, but one pattern we saw with some birds is an increase in vocalizations before and after totality, but a complete lack of calls during totality. The Common Grackle (below) was perhaps the most clear version of this pattern.
 
-```{r, out.width = "100%", fig.height = 3.57}
+```{r}
+#| echo: false
+#| warning: false
 # spring peeper
 sp_3d <- three_day |> filter(species == "Pseudacris crucifer_Spring Peeper") |>
   group_by(date, id) |> 
@@ -196,8 +198,6 @@ sp_plot <- ggplot(sp_3d, aes(time, Presence))+
   theme_minimal(base_size = 14)+
   theme(
     axis.text.x = element_text(angle = 45, hjust = 1, size = 10),
-    #axis.title.x = element_text(size = 10),
-    #axis.title.y= element_text(size = 10),
     plot.title = element_text(size = 14))
   
   
@@ -224,11 +224,114 @@ cg_plot <- ggplot(cgr_3d, aes(time, Presence))+
   theme_minimal(base_size = 14)+
   theme(
     axis.text.x = element_text(angle = 45, hjust = 1, size = 10),
-    #axis.title.x = element_text(size = 10),
-    #axis.title.y= element_text(size = 10),
     plot.title = element_text(size = 14))
   
 
 grid.arrange(sp_plot, cg_plot, ncol = 2)
 ```
 
+## Community Modeling
+
+We used a generalized additive mixed model (GAMM) to investigate the community-level responses to the eclipse (compared to surrounding days) while also factoring in the site (AudioMoth). The mixed component of the model is an AR(1) term to address temporal autocorrelation. We used a binary response variable of the presence or absence of a call for every 3-second interval that was passed to BirdNET.
+
+$$
+\operatorname{logit}(\pi_{iad}) = \beta_{ad} + f_{ad}(t_{iad}) + \epsilon_{iad}
+$$
+
+Since the response variable is binary, our 'family' for the model was binomial and we used a log-link function. $\pi_{iad}$ represents the probability of detecting a species for the $i^{th}$ observation recorded on the $a^{th}$ audiomoth ($a = 1, 2, \ldots, 6$) on the $d^{th}$ day of recording ($d = 1, 2, 3$). $\beta_{ad}$ is the intercept for each AudioMoth-day combination. $f_{ad}(t_{iad})$ is a smoother term for time (indexed by $i$) that changes for each AudioMoth-day combination. $t_{iad}$ represents the time (in seconds) that the $i^{th}$ observation was recorded at the $a^{th}$ audiomoth and the $d^{th}$ day. $\epsilon_{iad}$ represents random errors that follow an AR(1) temporal correlation structure for each AudioMoth-day combination with common shared correlation parameter $p$.
+
+We saw that the smoothers were generally significant, meaning it was benefitial having them in the model. Notably, all the effective degrees of freedom (edf) values on April 8th (and the majority of site-day combinations) were greater than 1, indicating that the species vocalizations followed a non-linear pattern regardless of the AudioMoth (the site). The table below displays this information for every AudioMoth-day combination. The AR(1) parameter showed a 0.231 temporal autocorrelation for lag 1.
+
+```{r}
+#| echo: false
+tidy(com_mod$gam) |> pander(split.cells = Inf)
+```
+
+As seen with the smoothers and in the plot below, the day and the site seems to result in a different pattern. We do still see the increase in overall vocalizations on April 8th, but the patterns become more varied from a peak at totality at different AudioMoth sites. All AudioMoths (AM0001, AM0002, AM0009, AM0011, AM0017, AM0020) and days (April 7th - April 9th) are displayed in the plot below. 
+
+```{r}
+#| warning: false
+#| echo: false
+# 3 day span
+day1 <- ymd_hms("2024-04-07 00:00:00")
+day3 <- ymd_hms("2024-04-9 23:59:59")
+
+# eclipse time: 15:25:30
+time_start <- as_hms("14:55:30")
+time_end <- as_hms("15:55:30")
+
+mult_AMs <- c("AM0001", "AM0011", "AM0017", "AM0002", "AM0009", "AM0020")
+
+AM_6_3d <- merged_df |> filter(deployment_num %in% mult_AMs) |> 
+  filter(between(time, time_start, time_end)) |>
+  filter(day1 <= date_time & date_time <= day3) |>
+  mutate(date = as_date(date_time)) |> 
+  group_by(deployment_num, date) |> 
+  # want to complete the gaps for each site/AM
+  complete(time = as_hms(seq(as.numeric(time_start), 
+  as.numeric(time_end), by = 3)), 
+  fill = list(value = NA)) |> 
+    ungroup() |> 
+    mutate(Presence = if_else(!is.na(probability),
+    true = 1,
+    false = 0)) |> 
+      relocate(Presence, probability) |> 
+      filter(seconds(time) != 57) |> 
+      group_by(deployment_num, date) |> 
+      distinct(time, .keep_all = TRUE) |> 
+      # get rid of any species at the same timestamp
+      ungroup()
+
+AM_6_3d <- AM_6_3d |> mutate(day = as_factor(day(date)),
+audiomoth_day = interaction(deployment_num, day))
+
+AM_6_3d$time_num <- as.numeric(AM_6_3d$time)
+
+grid_2 <- expand_grid(audiomoth_day = unique(AM_6_3d$audiomoth_day),
+                     time_num = unique(AM_6_3d$time_num))
+
+
+predictions_df <- augment(com_mod$gam, newdata = grid_2) |>
+  mutate(.fitted_prob = exp(.fitted) / (1 + exp(.fitted)))
+
+new_labels = c(
+  "AM0001.7" = "AM0001 Apr 7",
+  "AM0001.8" = "AM0001 Apr 8",
+  "AM0001.9" = "AM0001 Apr 9",
+  "AM0002.7" = "AM0002 Apr 7",
+  "AM0002.8" = "AM0002 Apr 8",
+  "AM0002.9" = "AM0002 Apr 9",
+  "AM0009.7" = "AM0009 Apr 7",
+  "AM0009.8" = "AM0009 Apr 8",
+  "AM0009.9" = "AM0009 Apr 9",
+  "AM0011.7" = "AM0011 Apr 7",
+  "AM0011.8" = "AM0011 Apr 8",
+  "AM0011.9" = "AM0011 Apr 9",
+  "AM0017.7" = "AM0017 Apr 7",
+  "AM0017.8" = "AM0017 Apr 8",
+  "AM0017.9" = "AM0017 Apr 9",
+  "AM0020.7" = "AM0020 Apr 7",
+  "AM0020.8" = "AM0020 Apr 8",
+  "AM0020.9" = "AM0020 Apr 9"
+) # to replace facet labels
+
+ggplot(data = predictions_df, aes(x = time_num, y = .fitted_prob)) +
+  geom_rect(xmin = 55432, xmax = 55625, ymin = 0, ymax = 1, 
+  fill = "darkseagreen", alpha = 0.3)+
+  geom_line() +
+  facet_wrap(~audiomoth_day, labeller = as_labeller(new_labels), 
+  nrow = 6, dir = "v")+
+  labs(y = "Fitted Probabilities",
+  x = "Time (sec)")+
+  theme_minimal(base_size = 14)+
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 10))
+```
+
+
+## Conclusion
+
+In general, we saw an increase in vocalizations in response to the eclipse at the community level, while species reacted differently. We saw a high level of variation in vocalization patterns on eclipse day for each site. We believe that differences in species composition at each site may be driving this difference in community response at each site.
+
+## Future Directions
+
+We need to manually validate these data as well as run a larger model that includes more days and all the sites (AudioMoths). We also need to check our assumptions (ACF plots) to make sure the model is appropriate. To truly understand the species level responses, modeling should be done for speices of interest and groups of species (like Anurans) to understand species level responses to the eclipse.
